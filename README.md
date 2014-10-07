@@ -26,3 +26,6 @@ Functions:
       Session ID
       Start Info
   shows Runtime
+
+
+See additional information http://dlution.at/
