@@ -12,6 +12,7 @@ namespace AWC
     public partial class main : Form
     {
         private static AWC.Global.GProcessData myGPrc;
+        private Forms.frmWindow frmWS;
 
         public static AWC.Global.GProcessData GPRC
         {
@@ -100,7 +101,8 @@ namespace AWC
         {
             try
             {
-                Forms.frmWindow frmWS = new Forms.frmWindow();
+                frmWS = new Forms.frmWindow();
+                frmWS.FormClosed += frmWS_FormClosed;
                 frmWS.Show();
             } catch (Exception ex)
             {
@@ -108,6 +110,22 @@ namespace AWC
             }
         }
 
+        void frmWS_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            try
+            {
+                if (frmWS != null && !frmWS.IsDisposed)
+                {
+                    frmWS.FormClosed -= frmWS_FormClosed;
+                    frmWS.Dispose();
+                    frmWS = null;
+                }
+            } catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+            }
+        }
+        
         private void main_FormClosing(object sender, FormClosingEventArgs e)
         {
             try

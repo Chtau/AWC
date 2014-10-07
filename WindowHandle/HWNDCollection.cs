@@ -35,18 +35,16 @@ namespace AWC.WindowHandle
                 if (myLHWND.Count > 0)
                     myLHWND.Clear();
 
-                int iHandle = 0;
-
                 foreach (Process iPrc in Process.GetProcesses())
                 {
-                    iHandle = iPrc.MainWindowHandle.ToInt32();
-                    if (iHandle > 0)
+                    if (iPrc.MainWindowHandle.ToInt32() > 0)
                     {
-                        Window wHWND = new Window(iPrc);
-                        myLHWND.Add(wHWND);
+                        //Window wHWND = new Window(iPrc);
+                        myLHWND.Add(new Window(iPrc));
                     }
-                    iHandle = 0;
                 }
+
+                GC.Collect();
             } catch (Exception)
             { }
         }

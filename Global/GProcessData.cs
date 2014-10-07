@@ -92,6 +92,10 @@ namespace AWC.Global
                                 //process was removed
                                 Log.cLogger.Log(string.Format("Process removed Name:'{0}'", wOld.Processname));
                                 OnProcessRemoved(new Public.ProcessEventArgs(wOld));
+
+
+                                wOld.WindowRefreshThread(false);
+                                wOld.Dispose();
                             }
                         }
                     }
@@ -124,6 +128,8 @@ namespace AWC.Global
                     }
 
                     System.Threading.Thread.Sleep(myProcessListSleepTime);
+
+                    GC.Collect();
                 }
             } catch (System.Threading.ThreadAbortException exTA)
             {

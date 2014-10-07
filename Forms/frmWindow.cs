@@ -46,8 +46,26 @@ namespace AWC.Forms
         {
             try
             {
-                main.GPRC.ProcessAdded += GPRC_ProcessAdded;
-                main.GPRC.ProcessRemoved += GPRC_ProcessRemoved;
+                GPRC_Events(true);
+            } catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+            }
+        }
+
+        private void GPRC_Events(bool bAddEvent)
+        {
+            try
+            {
+                if (bAddEvent)
+                {
+                    main.GPRC.ProcessAdded += GPRC_ProcessAdded;
+                    main.GPRC.ProcessRemoved += GPRC_ProcessRemoved;
+                } else
+                {
+                    main.GPRC.ProcessAdded -= GPRC_ProcessAdded;
+                    main.GPRC.ProcessRemoved -= GPRC_ProcessRemoved;
+                }
             } catch (Exception ex)
             {
                 Log.cLogger.Log(ex);
@@ -58,20 +76,24 @@ namespace AWC.Forms
         {
             try
             {
-                if (myHWND.Processname == e.Window.Processname)
+                if (myHWND != null)
                 {
-                    //current selected Window is removed (closed)
-                } else
-                {
+                    if (myHWND.Processname == e.Window.Processname)
+                    {
+                        //current selected Window is removed (closed)
+                    }
+                    else
+                    {
 
-                }
-                if (this.InvokeRequired && this.IsHandleCreated)
-                {
-                    this.BeginInvoke(new EmptyDelegate(FillWindowComboBox));
-                }
-                else
-                {
-                    FillWindowComboBox();
+                    }
+                    if (this.InvokeRequired && this.IsHandleCreated)
+                    {
+                        this.BeginInvoke(new EmptyDelegate(FillWindowComboBox));
+                    }
+                    else
+                    {
+                        FillWindowComboBox();
+                    }
                 }
             } catch (Exception ex)
             {
@@ -175,7 +197,11 @@ namespace AWC.Forms
                 //stop the old HWND refresh
                 if (myHWND != null)
                 {
+                    HWND_Events(false);
                     myHWND.WindowRefreshThread(false);
+                    myHWND.Dispose();
+                    myHWND = null;
+                    myRefIntPtrThumb = IntPtr.Zero;
                 }
 
                 //get the new selected intptr
@@ -196,12 +222,7 @@ namespace AWC.Forms
                     LoadModulsData();
                     myHWND.UseDWMThumbnail(myHWND.Handle, this, ref myRefIntPtrThumb);
 
-                    myHWND.WindowDataTextChanged += myHWND_WindowDataTextChanged;
-                    myHWND.WindowExStyleChanged += myHWND_WindowExStyleChanged;
-                    myHWND.WindowPositionSizeChanged += myHWND_WindowPositionSizeChanged;
-                    myHWND.WindowProcessExit += myHWND_WindowProcessExit;
-                    myHWND.WindowStyleChanged += myHWND_WindowStyleChanged;
-                    myHWND.WindowBasicChanged += myHWND_WindowBasicChanged;
+                    HWND_Events(true);
 
                     myHWND.WindowRefreshThread(true);
                 }
@@ -215,6 +236,36 @@ namespace AWC.Forms
             } finally
             {
                 bProcessSetValue = false;
+            }
+        }
+
+        private void HWND_Events(bool bAddEvents)
+        {
+            try
+            {
+                if (myHWND != null)
+                {
+                    if (!bAddEvents)
+                    {
+                        myHWND.WindowDataTextChanged -= myHWND_WindowDataTextChanged;
+                        myHWND.WindowExStyleChanged -= myHWND_WindowExStyleChanged;
+                        myHWND.WindowPositionSizeChanged -= myHWND_WindowPositionSizeChanged;
+                        myHWND.WindowProcessExit -= myHWND_WindowProcessExit;
+                        myHWND.WindowStyleChanged -= myHWND_WindowStyleChanged;
+                        myHWND.WindowBasicChanged -= myHWND_WindowBasicChanged;
+                    } else
+                    {
+                        myHWND.WindowDataTextChanged += myHWND_WindowDataTextChanged;
+                        myHWND.WindowExStyleChanged += myHWND_WindowExStyleChanged;
+                        myHWND.WindowPositionSizeChanged += myHWND_WindowPositionSizeChanged;
+                        myHWND.WindowProcessExit += myHWND_WindowProcessExit;
+                        myHWND.WindowStyleChanged += myHWND_WindowStyleChanged;
+                        myHWND.WindowBasicChanged += myHWND_WindowBasicChanged;
+                    }
+                }
+            } catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
             }
         }
 
@@ -1093,28 +1144,19 @@ namespace AWC.Forms
             }
         }
 
-        private void btnShowWindowDataOutput_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                frmWindowDataOutput frmWDO = new frmWindowDataOutput();
-                frmWDO.WindowHandle = (IntPtr)cbWindows.SelectedValue;
-                frmWDO.Show();
-            } catch (Exception ex)
-            {
-                Log.cLogger.Log(ex);
-            }
-        }
-
         private void frmWindowConfig_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
             {
                 if (myHWND != null)
                 {
+                    HWND_Events(false);
+
                     myHWND.WindowRefreshThread(false);
                     myHWND.Dispose();
+                    myHWND = null;
                 }
+                GPRC_Events(false);
             }
             catch (Exception ex)
             {
