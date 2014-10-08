@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
 using System.Diagnostics;
 
 namespace AWC.WindowHandle
 {
-    public class HWNDCollection
+    public class HWNDCollection :IDisposable    
     {
         private List<Window> myLHWND;
+        private bool _Dispose = false;
 
         public List<Window> LHWND
         {
             get
             {
+                if (myLHWND == null)
+                    myLHWND = new List<Window>();
                 return myLHWND;
             }
             set
@@ -25,34 +25,41 @@ namespace AWC.WindowHandle
 
         public HWNDCollection()
         {
-            myLHWND = new List<Window>();
+
         }
 
-        public void Load()//replace GetList from TA_Window_API
+        public void Load()
         {
-            try
-            {
-                if (myLHWND.Count > 0)
-                    myLHWND.Clear();
+            if (myLHWND == null)
+                myLHWND = new List<Window>();
 
-                foreach (Process iPrc in Process.GetProcesses())
+            if (myLHWND.Count > 0)
+                myLHWND.Clear();
+
+            foreach (Process iPrc in Process.GetProcesses())
+            {
+                try
                 {
                     if (iPrc.MainWindowHandle.ToInt32() > 0)
                     {
-                        //Window wHWND = new Window(iPrc);
                         myLHWND.Add(new Window(iPrc));
                     }
                 }
-
-                GC.Collect();
-            } catch (Exception)
-            { }
+                catch (Exception)
+                {
+                    if (iPrc != null)
+                        iPrc.Dispose();
+                }
+            }
         }
 
-        public Window FindByString(string strWindowTitle) //replace FindWindowInList from TA_Window_API
+        public Window FindByString(string strWindowTitle) 
         {
             try
             {
+                if (myLHWND == null)
+                    myLHWND = new List<Window>();
+
                 foreach (Window iHwnd in myLHWND)
                 {
                     if (iHwnd.Processname == strWindowTitle || iHwnd.Title == strWindowTitle)
@@ -67,10 +74,13 @@ namespace AWC.WindowHandle
             }
         }
 
-        public Window FindByIntPtr(IntPtr mHandle) //replace FindWindowInListByItrPtr from TA_Window_API
+        public Window FindByIntPtr(IntPtr mHandle) 
         {
             try
             {
+                if (myLHWND == null)
+                    myLHWND = new List<Window>();
+
                 foreach (Window iHwnd in myLHWND)
                 {
                     if (iHwnd.Handle == mHandle)
@@ -80,6 +90,25 @@ namespace AWC.WindowHandle
             } catch (Exception)
             {
                 return null;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(!this._Dispose);
+        }
+
+        protected virtual void Dispose(bool bDisposing)
+        {
+            if (bDisposing)
+            {
+                if (myLHWND != null)
+                {
+                    myLHWND.Clear();
+                    myLHWND = null;
+                }
+
+                this._Dispose = true;
             }
         }
     }

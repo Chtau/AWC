@@ -12,7 +12,6 @@ namespace AWC.Global
         private int myProcessListSleepTime = 1000;
 
         private AWC.WindowHandle.HWNDCollection myHWNDCol;
-        private AWC.WindowHandle.HWNDCollection myLastHWNDCol;
         private List<WindowHandle.Window> myLastHWNDWindows;
 
         public event EventHandler<Public.ProcessEventArgs> ProcessRemoved;
@@ -52,10 +51,6 @@ namespace AWC.Global
                 {
                     if (myHWNDCol == null)
                         myHWNDCol = new AWC.WindowHandle.HWNDCollection();
-
-                    //set current collection to the last collection object to compare this two with each other
-                    //and raise events if a process are removed or added
-                    myLastHWNDCol = myHWNDCol;
 
                     if (myLastHWNDWindows == null)
                         myLastHWNDWindows = new List<WindowHandle.Window>();
@@ -127,9 +122,11 @@ namespace AWC.Global
                         }
                     }
 
-                    System.Threading.Thread.Sleep(myProcessListSleepTime);
-
                     GC.Collect();
+
+                    System.Threading.Thread.Sleep(myProcessListSleepTime);
+                    System.Diagnostics.Debug.Print("GC Memory:" + GC.GetTotalMemory(true).ToString());
+
                 }
             } catch (System.Threading.ThreadAbortException exTA)
             {

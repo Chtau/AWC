@@ -171,7 +171,17 @@ namespace AWC.WindowHandle
                     myWindowProcessName = prc.ProcessName;
                     myConfigWindow = new Save.ConfigWindow(myWindowProcessName);
                     myWindowProcess = prc;
-                    myWindowProcess.EnableRaisingEvents = true;
+                    try
+                    {
+                        myWindowProcess.EnableRaisingEvents = true;
+                    }
+                    catch (System.ComponentModel.Win32Exception scex) 
+                    {
+                        if (scex.ErrorCode != -2147467259)
+                        {
+                            System.Diagnostics.Debug.Print(string.Format("Process can't raise events Processname:'{0}' Ex:'{1}'", myWindowProcessName, scex.Message));
+                        } 
+                    }
                     myWindowProcess.Disposed += myWindowProcess_Disposed;
                     myWindowProcess.ErrorDataReceived += myWindowProcess_ErrorDataReceived;
                     myWindowProcess.Exited += myWindowProcess_Exited;
