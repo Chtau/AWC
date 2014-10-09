@@ -10,6 +10,8 @@ namespace AWC.WindowHandle
 {
     public class Window: IDisposable
     {
+        private bool _Dispose = false;
+
         public delegate void WindowLogText(object sender, LogEventArgs e);
         public event WindowLogText WindowDataTextChanged;
         public event EventHandler WindowPositionSizeChanged;
@@ -521,7 +523,43 @@ namespace AWC.WindowHandle
 
         public void Dispose()
         {
-            WindowRefreshThread(false);
+            Dispose(_Dispose);
+        }
+
+        protected virtual void Dispose(bool bDispose)
+        {
+            if (!bDispose)
+            {
+                _Dispose = true;
+
+                if (myWindowProcess != null)
+                {
+                    myWindowProcess.Disposed -= myWindowProcess_Disposed;
+                    myWindowProcess.ErrorDataReceived -= myWindowProcess_ErrorDataReceived;
+                    myWindowProcess.Exited -= myWindowProcess_Exited;
+                    myWindowProcess.OutputDataReceived -= myWindowProcess_OutputDataReceived;
+
+                    myWindowProcess.Dispose();
+                    myWindowProcess = null;
+                }
+
+                if (myConfigWindow != null)
+                {
+                    myConfigWindow = null;
+                }
+
+                if (myWindowExStyleList != null)
+                {
+                    myWindowExStyleList.Clear();
+                    myWindowExStyleList = null;
+                }
+
+                if (myWindowStyleList != null)
+                {
+                    myWindowStyleList.Clear();
+                    myWindowStyleList = null;
+                }
+            }
         }
 
         private void WriteOutput(string strText, Enums.WindowLogFlags e)
@@ -548,9 +586,12 @@ namespace AWC.WindowHandle
 
         public void UseDWMThumbnail(IntPtr ipHandle, System.Windows.Forms.Form frmParent, ref IntPtr ipThumbnailRef)
         {
-            AWC.WindowHandle.NativStructs.RECT rec = new AWC.WindowHandle.NativStructs.RECT(7, 35, 150, 120);
-            DWMThumbnail.Registry(frmParent, ipHandle, ref ipThumbnailRef);
-            DWMThumbnail.Update(ipThumbnailRef, rec);
+            if (frmParent != null && ipHandle != IntPtr.Zero)
+            {
+                AWC.WindowHandle.NativStructs.RECT rec = new AWC.WindowHandle.NativStructs.RECT(7, 35, 150, 120);
+                DWMThumbnail.Registry(frmParent, ipHandle, ref ipThumbnailRef);
+                DWMThumbnail.Update(ipThumbnailRef, rec);
+            }
         }
 
         public bool SetSizeLocation(int iNewPosX, int iNewPosY, int iNewSizeX, int iNewSizeY)

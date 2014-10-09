@@ -10,6 +10,9 @@ namespace AWC.Global
         private System.Threading.Thread myProcessListThread;
         private int myProcessListRetry = 0;
         private int myProcessListSleepTime = 1000;
+        private int myGCMemoryMaxDiff = 100000;
+        private long myStartGCMemory = 0;
+        private System.Diagnostics.Stopwatch mytsGarbageWatch;
 
         private AWC.WindowHandle.HWNDCollection myHWNDCol;
         private List<WindowHandle.Window> myLastHWNDWindows;
@@ -47,15 +50,21 @@ namespace AWC.Global
             {
                 bool bfound = true;
 
+                if (myHWNDCol == null)
+                    myHWNDCol = new AWC.WindowHandle.HWNDCollection();
+
+                if (myLastHWNDWindows == null)
+                    myLastHWNDWindows = new List<WindowHandle.Window>();
+
                 while (myProcessListThread.IsAlive)
                 {
-                    if (myHWNDCol == null)
-                        myHWNDCol = new AWC.WindowHandle.HWNDCollection();
-
-                    if (myLastHWNDWindows == null)
-                        myLastHWNDWindows = new List<WindowHandle.Window>();
-
+                    for (int i = 0; i < myLastHWNDWindows.Count; i++)
+                    {
+                        myLastHWNDWindows[i].Dispose();
+                        myLastHWNDWindows[i] = null;
+                    }
                     myLastHWNDWindows.Clear();
+
 
                     foreach (WindowHandle.Window w in myHWNDCol.LHWND)
                     {
@@ -87,10 +96,6 @@ namespace AWC.Global
                                 //process was removed
                                 Log.cLogger.Log(string.Format("Process removed Name:'{0}'", wOld.Processname));
                                 OnProcessRemoved(new Public.ProcessEventArgs(wOld));
-
-
-                                wOld.WindowRefreshThread(false);
-                                wOld.Dispose();
                             }
                         }
                     }
@@ -122,10 +127,33 @@ namespace AWC.Global
                         }
                     }
 
-                    GC.Collect();
+
+                    long _currentGCMemory = GC.GetTotalMemory(true);
+
+                    if (myStartGCMemory != 0)
+                    {
+                        if (_currentGCMemory > (myStartGCMemory + myGCMemoryMaxDiff))
+                        {
+                            mytsGarbageWatch.Stop();
+
+                            System.Diagnostics.Debug.Print("Current Garbage:" + (_currentGCMemory - myStartGCMemory) + " Stop Watch:" + mytsGarbageWatch.ElapsedMilliseconds + " Milliseconds");
+
+                            myGCMemoryMaxDiff += 100000;
+
+                            mytsGarbageWatch.Reset();
+                            mytsGarbageWatch.Start();
+                        }
+                    }
+                    else
+                    {
+                        myStartGCMemory = _currentGCMemory;
+                        mytsGarbageWatch = new System.Diagnostics.Stopwatch();
+                        mytsGarbageWatch.Start();
+                    }
+
+                    System.Diagnostics.Debug.Print("GC Memory:" + _currentGCMemory.ToString());
 
                     System.Threading.Thread.Sleep(myProcessListSleepTime);
-                    System.Diagnostics.Debug.Print("GC Memory:" + GC.GetTotalMemory(true).ToString());
 
                 }
             } catch (System.Threading.ThreadAbortException exTA)
