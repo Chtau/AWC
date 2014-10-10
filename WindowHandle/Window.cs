@@ -19,6 +19,7 @@ namespace AWC.WindowHandle
         public event EventHandler WindowExStyleChanged;
         public event EventHandler WindowProcessExit;
         public event EventHandler WindowBasicChanged;
+        public event EventHandler WindowTitleChanged;
 
         private Save.ConfigWindow myConfigWindow;
         private string myWindowTitle;
@@ -466,6 +467,26 @@ namespace AWC.WindowHandle
             }
         }
 
+        private void GetTitle()
+        {
+            if (myWindowProcess != null)
+            {
+                try
+                {
+                    if (myWindowProcess.MainWindowTitle != myWindowTitle)
+                    {
+                        myWindowTitle = myWindowProcess.MainWindowTitle;
+
+                        if (WindowTitleChanged != null)
+                            WindowTitleChanged(this, new EventArgs());
+                    }
+                } catch (Exception ex)
+                {
+                    Log.cLogger.Log(ex);
+                }
+            }
+        }
+
         public void WindowRefreshThread(bool bStart)
         {
             if (bStart)
@@ -518,6 +539,7 @@ namespace AWC.WindowHandle
                 GetExStyle();
                 GetPositionSize();
                 GetTimes();
+                GetTitle();
             }
         }
 

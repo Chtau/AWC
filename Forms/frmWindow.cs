@@ -253,6 +253,7 @@ namespace AWC.Forms
                         myHWND.WindowProcessExit -= myHWND_WindowProcessExit;
                         myHWND.WindowStyleChanged -= myHWND_WindowStyleChanged;
                         myHWND.WindowBasicChanged -= myHWND_WindowBasicChanged;
+                        myHWND.WindowTitleChanged -= myHWND_WindowTitleChanged;
                     } else
                     {
                         myHWND.WindowDataTextChanged += myHWND_WindowDataTextChanged;
@@ -261,11 +262,24 @@ namespace AWC.Forms
                         myHWND.WindowProcessExit += myHWND_WindowProcessExit;
                         myHWND.WindowStyleChanged += myHWND_WindowStyleChanged;
                         myHWND.WindowBasicChanged += myHWND_WindowBasicChanged;
+                        myHWND.WindowTitleChanged += myHWND_WindowTitleChanged;
                     }
                 }
             } catch (Exception ex)
             {
                 Log.cLogger.Log(ex);
+            }
+        }
+
+        void myHWND_WindowTitleChanged(object sender, EventArgs e)
+        {
+            if (!bUserSetValue)
+            {
+                bProcessSetValue = true;
+
+                Log.cLogger.Log(string.Format("Window Title has Changed for Process:'{0}' new Title:'{1}'", myHWND.Processname, myHWND.Title));
+
+                bProcessSetValue = false;
             }
         }
 
