@@ -141,5 +141,33 @@ namespace AWC
             }
         }
 
+        private void writeLogToFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                saveFileDialog1.Title = "Save log to File";
+                saveFileDialog1.DefaultExt = "log";
+
+                string mFileName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\AWCDebug.log";
+                saveFileDialog1.FileName = mFileName;
+
+                 if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                 {
+                     if (!string.IsNullOrEmpty(saveFileDialog1.FileName))
+                     {
+                         mFileName = saveFileDialog1.FileName;
+                     }   
+                 } else
+                 {
+
+                 }
+                 Log.cLogger.CreateDebugLogFile(saveFileDialog1.FileName);
+
+            } catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+            }
+        }
+
     }
 }

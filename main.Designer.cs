@@ -38,6 +38,8 @@
             this.gbDebugText = new System.Windows.Forms.GroupBox();
             this.rtbDebugText = new System.Windows.Forms.RichTextBox();
             this.ssInfo = new System.Windows.Forms.StatusStrip();
+            this.writeLogToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.cmsMain.SuspendLayout();
             this.gbDebugText.SuspendLayout();
             this.SuspendLayout();
@@ -54,7 +56,8 @@
             this.cmsMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiClose,
             this.showDebugWindowToolStripMenuItem,
-            this.windowStyleToolStripMenuItem});
+            this.windowStyleToolStripMenuItem,
+            this.writeLogToFileToolStripMenuItem});
             this.cmsMain.Name = "cmsMain";
             this.cmsMain.Size = new System.Drawing.Size(189, 92);
             // 
@@ -108,6 +111,19 @@
             this.ssInfo.TabIndex = 2;
             this.ssInfo.Text = "statusStrip1";
             // 
+            // writeLogToFileToolStripMenuItem
+            // 
+            this.writeLogToFileToolStripMenuItem.Name = "writeLogToFileToolStripMenuItem";
+            this.writeLogToFileToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.writeLogToFileToolStripMenuItem.Text = "Write Log to File";
+            this.writeLogToFileToolStripMenuItem.Click += new System.EventHandler(this.writeLogToFileToolStripMenuItem_Click);
+            // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.DefaultExt = "log";
+            this.saveFileDialog1.RestoreDirectory = true;
+            this.saveFileDialog1.Title = "Save Log File";
+            // 
             // main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -138,6 +154,8 @@
         private System.Windows.Forms.StatusStrip ssInfo;
         private System.Windows.Forms.ToolStripMenuItem showDebugWindowToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem windowStyleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem writeLogToFileToolStripMenuItem;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }
 
