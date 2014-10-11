@@ -37,6 +37,7 @@ namespace AWC.WindowHandle
         private string myProcessPath = "";
         private DateTime myProcessStartTime = DateTime.MinValue;
         private TimeSpan myProcessRuntime = TimeSpan.Zero;
+        private int myWindowProcessID;
 
 
         public DateTime StartTime
@@ -172,8 +173,9 @@ namespace AWC.WindowHandle
                     myHandle = prc.MainWindowHandle;
                     myWindowTitle = prc.MainWindowTitle;
                     myWindowProcessName = prc.ProcessName;
+                    myWindowProcessID = prc.Id;
                     myConfigWindow = new Save.ConfigWindow(myWindowProcessName);
-                    myWindowProcess = prc;
+                    myWindowProcess =  prc;
                     try
                     {
                         myWindowProcess.EnableRaisingEvents = true;
@@ -487,6 +489,35 @@ namespace AWC.WindowHandle
             }
         }
 
+        private void GetProcessCheck()
+        {
+            try
+            {
+                if (myWindowProcess == null)
+                {
+                    if (myWindowProcessID > 0)
+                        myWindowProcess = System.Diagnostics.Process.GetProcessById(myWindowProcessID);
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(myWindowProcessName))
+                        {
+                            System.Diagnostics.Process[] prcArray = System.Diagnostics.Process.GetProcessesByName(myWindowProcessName);
+                            if (prcArray != null && prcArray.Length > 0)
+                                myWindowProcess = prcArray[0];
+                        }
+                    }
+                }
+
+                if (myWindowProcess != null)
+                {
+                    myWindowProcess.Refresh();
+                }
+            } catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+            }
+        }
+
         public void WindowRefreshThread(bool bStart)
         {
             if (bStart)
@@ -535,6 +566,7 @@ namespace AWC.WindowHandle
             {
                 Thread.Sleep(myWindowDataSleepTimebeforRefresh);
 
+                GetProcessCheck();
                 GetStyles();
                 GetExStyle();
                 GetPositionSize();

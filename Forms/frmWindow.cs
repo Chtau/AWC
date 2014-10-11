@@ -292,7 +292,8 @@ namespace AWC.Forms
                 bProcessSetValue = true;
                 if (this.InvokeRequired)
                 {
-                    this.Invoke(new EmptyDelegate(LoadBasic));
+                    if (this.IsHandleCreated)
+                        this.Invoke(new EmptyDelegate(LoadBasic));
                 }
                 else
                 {
@@ -309,7 +310,8 @@ namespace AWC.Forms
                 bProcessSetValue = true;
                 if (this.InvokeRequired)
                 {
-                    this.Invoke(new StyleLoadDelegate(LoadStyle), myHWND.Stylelist);
+                    if (this.IsHandleCreated)
+                        this.Invoke(new StyleLoadDelegate(LoadStyle), myHWND.Stylelist);
                 }
                 else
                 {
@@ -335,7 +337,8 @@ namespace AWC.Forms
                 bProcessSetValue = true;
                 if (this.InvokeRequired)
                 {
-                    this.Invoke(new EmptyDelegate(LoadPositionLocation));
+                    if (this.IsHandleCreated)
+                        this.Invoke(new EmptyDelegate(LoadPositionLocation));
                 }
                 else
                 {
@@ -352,7 +355,8 @@ namespace AWC.Forms
                 bProcessSetValue = true;
                 if (this.InvokeRequired)
                 {
-                    this.Invoke(new ExStyleLoadDelegate(LoadExStyle), myHWND.ExStylelist);
+                    if (this.IsHandleCreated)
+                        this.Invoke(new ExStyleLoadDelegate(LoadExStyle), myHWND.ExStylelist);
                 }
                 else
                 {
@@ -369,7 +373,8 @@ namespace AWC.Forms
                 bProcessSetValue = true;
                 if (this.InvokeRequired)
                 {
-                    this.Invoke(new TextDelegate(WindowDataTextChanged), e.Logtext);
+                    if (this.IsHandleCreated)
+                        this.Invoke(new TextDelegate(WindowDataTextChanged), e.Logtext);
                 }
                 else
                 {
