@@ -11,6 +11,7 @@ namespace AWC.WindowHandle
     public class Window: IDisposable
     {
         private bool _Dispose = false;
+        private bool _ProcessEndSend = false;
 
         public delegate void WindowLogText(object sender, LogEventArgs e);
         public event WindowLogText WindowDataTextChanged;
@@ -222,10 +223,16 @@ namespace AWC.WindowHandle
 
         private void ProcessEnds()
         {
-            if (WindowProcessExit != null)
-                WindowProcessExit(this, new EventArgs());
+            if (!_ProcessEndSend)
+            {
+                if (WindowProcessExit != null)
+                {
+                    WindowProcessExit(this, new EventArgs());
+                    _ProcessEndSend = true;
+                }
 
-            WriteOutput("Window Process has end;", Enums.WindowLogFlags.INFOLOG);
+                WriteOutput("Window Process has end;", Enums.WindowLogFlags.INFOLOG);
+            }
         }
 
         private void GetStyles()
