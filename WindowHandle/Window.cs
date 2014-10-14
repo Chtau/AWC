@@ -15,12 +15,12 @@ namespace AWC.WindowHandle
 
         public delegate void WindowLogText(object sender, LogEventArgs e);
         public event WindowLogText WindowDataTextChanged;
-        public event EventHandler WindowPositionSizeChanged;
-        public event EventHandler WindowStyleChanged;
-        public event EventHandler WindowExStyleChanged;
-        public event EventHandler WindowProcessExit;
-        public event EventHandler WindowBasicChanged;
-        public event EventHandler WindowTitleChanged;
+        public event EventHandler<Public.ProcessEventArgs> WindowPositionSizeChanged;
+        public event EventHandler<Public.ProcessEventArgs> WindowStyleChanged;
+        public event EventHandler<Public.ProcessEventArgs> WindowExStyleChanged;
+        public event EventHandler<Public.ProcessEventArgs> WindowProcessExit;
+        public event EventHandler<Public.ProcessEventArgs> WindowBasicChanged;
+        public event EventHandler<Public.ProcessEventArgs> WindowTitleChanged;
 
         private Save.ConfigWindow myConfigWindow;
         private string myWindowTitle;
@@ -227,12 +227,18 @@ namespace AWC.WindowHandle
             {
                 if (WindowProcessExit != null)
                 {
-                    WindowProcessExit(this, new EventArgs());
+                    OnWindowProcessExit(new Public.ProcessEventArgs(this));
                     _ProcessEndSend = true;
                 }
 
                 WriteOutput("Window Process has end;", Enums.WindowLogFlags.INFOLOG);
             }
+        }
+
+        protected virtual void OnWindowProcessExit(Public.ProcessEventArgs e)
+        {
+            if (WindowProcessExit != null)
+                WindowProcessExit(this, e);
         }
 
         private void GetStyles()
@@ -302,14 +308,19 @@ namespace AWC.WindowHandle
 
                     myTempList.Clear();
 
-                    if (WindowStyleChanged != null)
-                        WindowStyleChanged(this, new EventArgs());
+                    OnWindowStyleChanged(new Public.ProcessEventArgs(this));
                 } else
                 {
                     WriteOutput("GetStyles can´t execute, Window Handle is zero;", Enums.WindowLogFlags.ERRORLOG);
                 }
             } catch (Exception)
             { }
+        }
+
+        protected virtual void OnWindowStyleChanged(Public.ProcessEventArgs e)
+        {
+            if (WindowStyleChanged != null)
+                WindowStyleChanged(this, e);
         }
 
         private void GetExStyle()
@@ -379,14 +390,19 @@ namespace AWC.WindowHandle
 
                     myTempList.Clear();
 
-                    if (WindowExStyleChanged != null)
-                        WindowExStyleChanged(this, new EventArgs());
+                    OnWindowExStyleChanged(new Public.ProcessEventArgs(this));
                 } else
                 {
                     WriteOutput("GetExStyle can´t execute, Window Handle is zero;", Enums.WindowLogFlags.ERRORLOG);
                 }
             } catch (Exception)
             { }
+        }
+
+        protected virtual void OnWindowExStyleChanged(Public.ProcessEventArgs e)
+        {
+            if (WindowExStyleChanged != null)
+                WindowExStyleChanged(this, e);
         }
 
         private void GetPositionSize()
@@ -417,14 +433,19 @@ namespace AWC.WindowHandle
                         myWindowRectangle.X = mWindRECT.X;
                         myWindowRectangle.Y = mWindRECT.Y;
 
-                        if (WindowPositionSizeChanged != null)
-                            WindowPositionSizeChanged(this, new EventArgs());
+                        OnWindowPositionSizeChanged(new Public.ProcessEventArgs(this));
                     }
                 }
             } else
             {
                 WriteOutput("GetPositionSize can´t execute, Window Handle is zero;", Enums.WindowLogFlags.ERRORLOG);
             }
+        }
+
+        protected virtual void OnWindowPositionSizeChanged(Public.ProcessEventArgs e)
+        {
+            if (WindowPositionSizeChanged != null)
+                WindowPositionSizeChanged(this, e);
         }
 
         private string GetProcessPath()
@@ -471,9 +492,14 @@ namespace AWC.WindowHandle
                 if (myProcessStartTime != DateTime.MinValue)
                     myProcessRuntime = new TimeSpan((DateTime.Now.Subtract(myProcessStartTime)).Ticks);
 
-                if (WindowBasicChanged != null)
-                    WindowBasicChanged(this, new EventArgs());
+                OnWindowBasicChanged(new Public.ProcessEventArgs(this));
             }
+        }
+
+        protected virtual void OnWindowBasicChanged(Public.ProcessEventArgs e)
+        {
+            if (WindowBasicChanged != null)
+                WindowBasicChanged(this, e);
         }
 
         private void GetTitle()
@@ -486,14 +512,19 @@ namespace AWC.WindowHandle
                     {
                         myWindowTitle = myWindowProcess.MainWindowTitle;
 
-                        if (WindowTitleChanged != null)
-                            WindowTitleChanged(this, new EventArgs());
+                        OnWindowTitleChanged(new Public.ProcessEventArgs(this));
                     }
                 } catch (Exception ex)
                 {
                     Log.cLogger.Log(ex);
                 }
             }
+        }
+
+        protected virtual void OnWindowTitleChanged(Public.ProcessEventArgs e)
+        {
+            if (WindowTitleChanged != null)
+                WindowTitleChanged(this, e);
         }
 
         private void GetProcessCheck()

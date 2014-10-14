@@ -271,7 +271,7 @@ namespace AWC.Forms
             }
         }
 
-        void myHWND_WindowTitleChanged(object sender, EventArgs e)
+        void myHWND_WindowTitleChanged(object sender, Public.ProcessEventArgs e)
         {
             if (!bUserSetValue)
             {
@@ -285,7 +285,7 @@ namespace AWC.Forms
 
         #region Window events
 
-        void myHWND_WindowBasicChanged(object sender, EventArgs e)
+        void myHWND_WindowBasicChanged(object sender, Public.ProcessEventArgs e)
         {
             if (!bUserSetValue)
             {
@@ -303,7 +303,7 @@ namespace AWC.Forms
             }
         }
 
-        void myHWND_WindowStyleChanged(object sender, EventArgs e)
+        void myHWND_WindowStyleChanged(object sender, Public.ProcessEventArgs e)
         {
             if (!bUserSetValue)
             {
@@ -321,7 +321,7 @@ namespace AWC.Forms
             }
         }
 
-        void myHWND_WindowProcessExit(object sender, EventArgs e)
+        void myHWND_WindowProcessExit(object sender, Public.ProcessEventArgs e)
         {
             bProcessSetValue = true;
             myHWND.WindowRefreshThread(false);
@@ -330,7 +330,7 @@ namespace AWC.Forms
             bProcessSetValue = false;
         }
 
-        void myHWND_WindowPositionSizeChanged(object sender, EventArgs e)
+        void myHWND_WindowPositionSizeChanged(object sender, Public.ProcessEventArgs e)
         {
             if (!bUserSetValue)
             {
@@ -348,7 +348,7 @@ namespace AWC.Forms
             }
         }
 
-        void myHWND_WindowExStyleChanged(object sender, EventArgs e)
+        void myHWND_WindowExStyleChanged(object sender, Public.ProcessEventArgs e)
         {
             if (!bUserSetValue)
             {
