@@ -9,7 +9,7 @@ namespace AWC.ExternTools
     {
         private AWC.Global.GProcessData myGPrc;
         private bool _Dispose = false;
-        private Dictionary<string ,List<ProcessEventTyp>> myProcessToWatch;
+        private Dictionary<string ,List<ExternalToolConfig>> myProcessToWatch;
         private List<WindowHandle.Window> myWindowsForWatching;
 
         public enum ProcessEventTyp
@@ -34,7 +34,7 @@ namespace AWC.ExternTools
 
                     if (myProcessToWatch == null)
                     {
-                        myProcessToWatch = new Dictionary<string, List<ProcessEventTyp>>();
+                        myProcessToWatch = new Dictionary<string, List<ExternalToolConfig>>();
                     }
                     
                     myGPrc = mGPrc;
@@ -50,33 +50,33 @@ namespace AWC.ExternTools
             }
         }
 
-        private bool Load(string strProcessName, ProcessEventTyp ePrcEventTyp)
+        public bool Load(ExternalToolConfig _ExToolConfig)
         {
             try
             {
-                if (!string.IsNullOrEmpty(strProcessName))
+                if (_ExToolConfig != null && !string.IsNullOrEmpty(_ExToolConfig.ProcessName))
                 {
                     if (myProcessToWatch == null)
                     {
-                        myProcessToWatch = new Dictionary<string, List<ProcessEventTyp>>();
+                        myProcessToWatch = new Dictionary<string, List<ExternalToolConfig>>();
                     }
 
                     if (myWindowsForWatching == null)
                         myWindowsForWatching = new List<WindowHandle.Window>();
 
-                    if (!myProcessToWatch.ContainsKey(strProcessName))
+                    if (!myProcessToWatch.ContainsKey(_ExToolConfig.ProcessName))
                     {
-                        myProcessToWatch.Add(strProcessName, new List<ProcessEventTyp>());
-                        myProcessToWatch[strProcessName].Add(ePrcEventTyp);
-                        Log.cLogger.Log(string.Format("Added Processname:'{0}' to the Watching list", strProcessName));
+                        myProcessToWatch.Add(_ExToolConfig.ProcessName, new List<ExternalToolConfig>());
+                        myProcessToWatch[_ExToolConfig.ProcessName].Add(_ExToolConfig);
+                        Log.cLogger.Log(string.Format("Added Processname:'{0}' to the Watching list", _ExToolConfig.ProcessName));
                     } else
                     {
-                        if (myProcessToWatch[strProcessName].Contains(ePrcEventTyp))
+                        if (myProcessToWatch[_ExToolConfig.ProcessName].Contains(_ExToolConfig))
                         {
-                            Log.cLogger.Log(string.Format("Process with Eventtyp already added to the Watching list, Processname:'{0}'", strProcessName));
+                            Log.cLogger.Log(string.Format("Process with Eventtyp already added to the Watching list, Processname:'{0}'", _ExToolConfig.ProcessName));
                         } else
                         {
-                            myProcessToWatch[strProcessName].Add(ePrcEventTyp);
+                            myProcessToWatch[_ExToolConfig.ProcessName].Add(_ExToolConfig);
                         }
                     }                    
 
@@ -92,7 +92,7 @@ namespace AWC.ExternTools
             }
         }
 
-        private bool CheckProcessForEvents(string strProcessName, ProcessEventTyp ePrcEventTyp)
+        private string CheckProcessForEvents(string strProcessName, ProcessEventTyp ePrcEventTyp)
         {
             try
             {
@@ -100,19 +100,26 @@ namespace AWC.ExternTools
                 {
                     if (myProcessToWatch != null && myProcessToWatch.ContainsKey(strProcessName))
                     {
-                        return myProcessToWatch[strProcessName].Contains(ePrcEventTyp);
+                        foreach (ExternalToolConfig _exToolC in myProcessToWatch[strProcessName])
+                        {
+                            if (ePrcEventTyp == _exToolC.ProcessEventTyp)
+                            {
+                                return _exToolC.ProcessStartParameter;
+                            }
+                        }
+                        return "";
                     } else
                     {
-                        return false;
+                        return "";
                     }
                 } else
                 {
-                    return false;
+                    return "";
                 }
             } catch (Exception ex)
             {
                 Log.cLogger.Log(ex);
-                return false;
+                return "";
             }
         }
 
@@ -145,10 +152,11 @@ namespace AWC.ExternTools
             {
                 if (myProcessToWatch != null && myProcessToWatch.ContainsKey(e.Window.Processname))
                 {
-                    if (CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.ProcessEnd))
+                    string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.ProcessEnd);
+                    if (!string.IsNullOrEmpty(_ret))
                     {
                         //Process exit event
-                        OnLoadedEvent(e.Window);
+                        OnLoadedEvent(e.Window, _ret);
                     }
 
                     Log.cLogger.Log(string.Format("Watcher found Process in Collection are getting removed, Processname:'{0}'", e.Window.Processname));
@@ -167,10 +175,11 @@ namespace AWC.ExternTools
             {
                 if (myProcessToWatch != null && myProcessToWatch.ContainsKey(e.Window.Processname))
                 {
-                    if (CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.ProcessStart))
+                    string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.ProcessStart);
+                    if (!string.IsNullOrEmpty(_ret))
                     {
-                        //Process start event
-                        OnLoadedEvent(e.Window);
+                        //Process exit event
+                        OnLoadedEvent(e.Window, _ret);
                     }
 
                     Log.cLogger.Log(string.Format("Watcher found Process in Collection are getting added, Processname:'{0}'", e.Window.Processname));
@@ -314,10 +323,11 @@ namespace AWC.ExternTools
         {
             try
             {
-                if (CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.BasicData))
+                string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.BasicData);
+                if (!string.IsNullOrEmpty(_ret))
                 {
-                    //Process basic data event
-                    OnLoadedEvent(e.Window);
+                    //Process exit event
+                    OnLoadedEvent(e.Window, _ret);
                 }
             } catch (Exception ex)
             {
@@ -341,10 +351,11 @@ namespace AWC.ExternTools
         {
             try
             {
-                if (CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.WindowExStyle))
+                string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.WindowExStyle);
+                if (!string.IsNullOrEmpty(_ret))
                 {
-                    //Process ExStyle event
-                    OnLoadedEvent(e.Window);
+                    //Process exit event
+                    OnLoadedEvent(e.Window, _ret);
                 }
             }
             catch (Exception ex)
@@ -357,10 +368,11 @@ namespace AWC.ExternTools
         {
             try
             {
-                if (CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.PositionSize))
+                string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.PositionSize);
+                if (!string.IsNullOrEmpty(_ret))
                 {
-                    //Process Position Size event
-                    OnLoadedEvent(e.Window);
+                    //Process exit event
+                    OnLoadedEvent(e.Window, _ret);
                 }
             }
             catch (Exception ex)
@@ -373,10 +385,11 @@ namespace AWC.ExternTools
         {
             try
             {
-                if (CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.ProcessEnd))
+                string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.ProcessEnd);
+                if (!string.IsNullOrEmpty(_ret))
                 {
                     //Process exit event
-                    OnLoadedEvent(e.Window);
+                    OnLoadedEvent(e.Window, _ret);
                 }
             }
             catch (Exception ex)
@@ -389,10 +402,11 @@ namespace AWC.ExternTools
         {
             try
             {
-                if (CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.WindowStyle))
+                string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.WindowStyle);
+                if (!string.IsNullOrEmpty(_ret))
                 {
-                    //Process style event
-                    OnLoadedEvent(e.Window);
+                    //Process exit event
+                    OnLoadedEvent(e.Window, _ret);
                 }
             }
             catch (Exception ex)
@@ -405,10 +419,11 @@ namespace AWC.ExternTools
         {
             try
             {
-                if (CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.WindowTitle))
+                string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.WindowTitle);
+                if (!string.IsNullOrEmpty(_ret))
                 {
-                    //Process title event
-                    OnLoadedEvent(e.Window);
+                    //Process exit event
+                    OnLoadedEvent(e.Window, _ret);
                 }
             }
             catch (Exception ex)
@@ -417,7 +432,7 @@ namespace AWC.ExternTools
             }
         }
 
-        protected virtual void OnLoadedEvent(WindowHandle.Window win)
+        protected virtual void OnLoadedEvent(WindowHandle.Window win, string strStartParam)
         {
             try
             {
@@ -425,7 +440,7 @@ namespace AWC.ExternTools
                 {
                     Log.cLogger.Log(string.Format("Loaded event raised for Process:'{0}'", win.Processname));
 
-
+                    System.Diagnostics.Process.Start(strStartParam);
                 } else
                 {
                     Log.cLogger.Log("Loaded event can't raised Window data is null");

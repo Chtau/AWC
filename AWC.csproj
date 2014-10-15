@@ -81,6 +81,7 @@
     <Compile Include="Controls\ucProcess.Designer.cs">
       <DependentUpon>ucProcess.cs</DependentUpon>
     </Compile>
+    <Compile Include="ExternTools\ExternalToolConfig.cs" />
     <Compile Include="ExternTools\ExternTool.cs" />
     <Compile Include="Forms\frmWindow.cs">
       <SubType>Form</SubType>

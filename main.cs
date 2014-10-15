@@ -13,6 +13,18 @@ namespace AWC
     {
         private static AWC.Global.GProcessData myGPrc;
         private Forms.frmWindow frmWS;
+        private static AWC.ExternTools.ExternTool myExTool;
+
+        public static AWC.ExternTools.ExternTool ExternTool
+        {
+            get
+            {
+                if (myExTool == null)
+                    main.InitGlobal();
+
+                return myExTool;
+            }
+        }
 
         public static AWC.Global.GProcessData GPRC
         {
@@ -28,6 +40,7 @@ namespace AWC
         private static void InitGlobal()
         {
             myGPrc = new Global.GProcessData();
+            myExTool = new ExternTools.ExternTool();
         }
 
         public main()
@@ -134,6 +147,11 @@ namespace AWC
                 {
                     myGPrc.InterupRefresh();
                 }
+                if (myExTool != null)
+                {
+                    myExTool.Dispose();
+                    myExTool = null;
+                }
             }
             catch (Exception ex)
             {
@@ -164,6 +182,39 @@ namespace AWC
                  Log.cLogger.CreateDebugLogFile(saveFileDialog1.FileName);
 
             } catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+            }
+        }
+
+        private void processCheckerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ProcessChecker(processCheckerToolStripMenuItem.Checked);
+            } catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+            }
+        }
+
+        private void ProcessChecker(bool bStart)
+        {
+            try
+            {
+                if (bStart)
+                {
+                    if (myExTool == null)
+                        myExTool = new ExternTools.ExternTool();
+
+                    myExTool.StartCheck(myGPrc);
+                }
+                else
+                {
+                    myExTool.Dispose();
+                }
+            }
+            catch (Exception ex)
             {
                 Log.cLogger.Log(ex);
             }
