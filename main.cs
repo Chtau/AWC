@@ -14,6 +14,7 @@ namespace AWC
         private static AWC.Global.GProcessData myGPrc;
         private Forms.frmWindow frmWS;
         private static AWC.ExternTools.ExternTool myExTool;
+        private ExternTools.frmConfigExternalTool frmCExTool;
 
         public static AWC.ExternTools.ExternTool ExternTool
         {
@@ -215,6 +216,27 @@ namespace AWC
                 }
             }
             catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+            }
+        }
+
+        private void configCheckerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (frmCExTool == null)
+                    frmCExTool = new ExternTools.frmConfigExternalTool();
+
+                if (!frmCExTool.Visible)
+                {
+                    frmCExTool.Show();
+                } else
+                {
+                    frmCExTool.BringToFront();
+                }
+
+            } catch (Exception ex)
             {
                 Log.cLogger.Log(ex);
             }

@@ -36,11 +36,12 @@
             this.showDebugWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowStyleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.writeLogToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.processCheckerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gbDebugText = new System.Windows.Forms.GroupBox();
             this.rtbDebugText = new System.Windows.Forms.RichTextBox();
             this.ssInfo = new System.Windows.Forms.StatusStrip();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.processCheckerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.configCheckerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsMain.SuspendLayout();
             this.gbDebugText.SuspendLayout();
             this.SuspendLayout();
@@ -59,9 +60,10 @@
             this.showDebugWindowToolStripMenuItem,
             this.windowStyleToolStripMenuItem,
             this.writeLogToFileToolStripMenuItem,
-            this.processCheckerToolStripMenuItem});
+            this.processCheckerToolStripMenuItem,
+            this.configCheckerToolStripMenuItem});
             this.cmsMain.Name = "cmsMain";
-            this.cmsMain.Size = new System.Drawing.Size(189, 136);
+            this.cmsMain.Size = new System.Drawing.Size(189, 158);
             // 
             // tsmiClose
             // 
@@ -91,6 +93,14 @@
             this.writeLogToFileToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.writeLogToFileToolStripMenuItem.Text = "Write Log to File";
             this.writeLogToFileToolStripMenuItem.Click += new System.EventHandler(this.writeLogToFileToolStripMenuItem_Click);
+            // 
+            // processCheckerToolStripMenuItem
+            // 
+            this.processCheckerToolStripMenuItem.CheckOnClick = true;
+            this.processCheckerToolStripMenuItem.Name = "processCheckerToolStripMenuItem";
+            this.processCheckerToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.processCheckerToolStripMenuItem.Text = "Process checker";
+            this.processCheckerToolStripMenuItem.Click += new System.EventHandler(this.processCheckerToolStripMenuItem_Click);
             // 
             // gbDebugText
             // 
@@ -126,13 +136,12 @@
             this.saveFileDialog1.RestoreDirectory = true;
             this.saveFileDialog1.Title = "Save Log File";
             // 
-            // processCheckerToolStripMenuItem
+            // configCheckerToolStripMenuItem
             // 
-            this.processCheckerToolStripMenuItem.CheckOnClick = true;
-            this.processCheckerToolStripMenuItem.Name = "processCheckerToolStripMenuItem";
-            this.processCheckerToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-            this.processCheckerToolStripMenuItem.Text = "Process checker";
-            this.processCheckerToolStripMenuItem.Click += new System.EventHandler(this.processCheckerToolStripMenuItem_Click);
+            this.configCheckerToolStripMenuItem.Name = "configCheckerToolStripMenuItem";
+            this.configCheckerToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.configCheckerToolStripMenuItem.Text = "Config checker";
+            this.configCheckerToolStripMenuItem.Click += new System.EventHandler(this.configCheckerToolStripMenuItem_Click);
             // 
             // main
             // 
@@ -167,6 +176,7 @@
         private System.Windows.Forms.ToolStripMenuItem writeLogToFileToolStripMenuItem;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.ToolStripMenuItem processCheckerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem configCheckerToolStripMenuItem;
     }
 }
 

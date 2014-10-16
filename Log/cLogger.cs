@@ -85,6 +85,18 @@ namespace AWC.Log
                     }
                     else
                     {
+                        if (myDicLogText == null)
+                        {
+                            myDicLogText = new Dictionary<LogType, List<string>>();
+                        }
+
+                        if (!myDicLogText.ContainsKey(lt))
+                        {
+                            myDicLogText.Add(lt, new List<string>());
+                        }
+                        myDicLogText[lt].Add(str);
+
+
                         Debug.Print(str);
                         myLogText += "\r" + str;
                         if (!string.IsNullOrEmpty(myDebugTextControl.Text))
