@@ -66,8 +66,6 @@
             this.dgvExternalToolConfig.ShowCellErrors = false;
             this.dgvExternalToolConfig.Size = new System.Drawing.Size(547, 247);
             this.dgvExternalToolConfig.TabIndex = 1;
-            this.dgvExternalToolConfig.RowLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvExternalToolConfig_RowLeave);
-            this.dgvExternalToolConfig.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgvExternalToolConfig_RowsRemoved);
             // 
             // colEnable
             // 

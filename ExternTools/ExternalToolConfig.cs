@@ -6,6 +6,13 @@ namespace AWC.ExternTools
         private string myProcessName;
         private AWC.ExternTools.ExternTool.ProcessEventTyp myProcessEventTyp;
         private string myProcessStartParameter;
+        private bool myEnable;
+
+        public bool Enable
+        {
+            get { return myEnable; }
+            set { myEnable = value; }
+        }
 
         public string ProcessName
         {
@@ -30,6 +37,14 @@ namespace AWC.ExternTools
             myProcessName = _ProcessName;
             myProcessEventTyp = _PrcoessEventTyp;
             myProcessStartParameter = _ProcessStartParameter;
+        }
+
+        public ExternalToolConfig(string _ProcessName, AWC.ExternTools.ExternTool.ProcessEventTyp _PrcoessEventTyp, string _ProcessStartParameter, bool _Enable) : this(_ProcessName, _PrcoessEventTyp, _ProcessStartParameter)
+        {
+            myProcessName = _ProcessName;
+            myProcessEventTyp = _PrcoessEventTyp;
+            myProcessStartParameter = _ProcessStartParameter;
+            myEnable = _Enable;
         }
 
 

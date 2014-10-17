@@ -225,8 +225,11 @@ namespace AWC
         {
             try
             {
-                if (frmCExTool == null)
+                if (frmCExTool == null || frmCExTool.Disposing || frmCExTool.IsDisposed || !frmCExTool.IsHandleCreated)
+                {
                     frmCExTool = new ExternTools.frmConfigExternalTool();
+                    frmCExTool.ConfigDataChanged += frmCExTool_ConfigDataChanged;
+                }
 
                 if (!frmCExTool.Visible)
                 {
@@ -236,6 +239,23 @@ namespace AWC
                     frmCExTool.BringToFront();
                 }
 
+            } catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+            }
+        }
+
+        void frmCExTool_ConfigDataChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (frmCExTool != null && frmCExTool.ExToolConfig != null && frmCExTool.ExToolConfig.Count > 0)
+                {
+                    for (int i = 0; i < frmCExTool.ExToolConfig.Count; i++)
+                    {
+                        myExTool.Load(frmCExTool.ExToolConfig[i]);
+                    }
+                }
             } catch (Exception ex)
             {
                 Log.cLogger.Log(ex);

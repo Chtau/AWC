@@ -15,6 +15,11 @@ namespace AWC.ExternTools
 
         private List<ExternalToolConfig> mylExConfigs;
 
+        public List<ExternalToolConfig> ExToolConfig
+        {
+            get { return mylExConfigs; }
+        }
+
         public frmConfigExternalTool()
         {
             InitializeComponent();
@@ -27,6 +32,14 @@ namespace AWC.ExternTools
         {
             try
             {
+                dgvExternalToolConfig.EndEdit();
+
+                mylExConfigs.Clear();
+
+                for (int i = 0; i < dgvExternalToolConfig.Rows.Count; i++)
+                {
+                    GetConfigFromRow(dgvExternalToolConfig.Rows[i]);
+                }
 
                 OnConfigDataChanged();
             } catch (Exception ex)
@@ -47,29 +60,6 @@ namespace AWC.ExternTools
             }
         }
 
-        private void dgvExternalToolConfig_RowLeave(object sender, DataGridViewCellEventArgs e)
-        {
-            try
-            {
-
-            } catch (Exception ex)
-            {
-                Log.cLogger.Log(ex);
-            }
-        }
-
-        private void dgvExternalToolConfig_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
-        {
-            try
-            {
-
-            }
-            catch (Exception ex)
-            {
-                Log.cLogger.Log(ex);
-            }
-        }
-
         private void GetConfigFromRow(DataGridViewRow _row)
         {
             try
@@ -77,11 +67,13 @@ namespace AWC.ExternTools
                 string strProcessName = "";
                 string strCommand = "";
                 string strEventtyp = "";
+                bool bEnable = false;
                 ExternTool.ProcessEventTyp _PrcEventType = ExternTool.ProcessEventTyp.ProcessStart;
 
                 strProcessName = _row.Cells["colProcessName"].Value as string;
                 strCommand = _row.Cells["colStartCommand"].Value as string;
                 strEventtyp = _row.Cells["colEventTyp"].Value as string;
+                bEnable = Convert.ToBoolean(_row.Cells["colEnable"].Value);
 
                 if (!string.IsNullOrEmpty(strCommand) && !string.IsNullOrEmpty(strCommand) && !string.IsNullOrEmpty(strEventtyp))
                 {
@@ -116,7 +108,7 @@ namespace AWC.ExternTools
                             break;
 	                }
 
-                    ExternalToolConfig exCon = new ExternalToolConfig(strProcessName, _PrcEventType, strCommand);
+                    ExternalToolConfig exCon = new ExternalToolConfig(strProcessName, _PrcEventType, strCommand, bEnable);
                     if (exCon != null)
                     {
                         mylExConfigs.Add(exCon);
