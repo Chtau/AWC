@@ -47,6 +47,56 @@ namespace AWC.ExternTools
             myEnable = _Enable;
         }
 
+        public static string GetStringEventTypValue(ExternTool.ProcessEventTyp _ProcessEventTyp)
+        {
+            switch (_ProcessEventTyp)
+            {
+                case ExternTool.ProcessEventTyp.ProcessStart:
+                    return "Start";
+                case ExternTool.ProcessEventTyp.ProcessEnd:
+                    return "End";
+                case ExternTool.ProcessEventTyp.BasicData:
+                    return "Basicdata";
+                case ExternTool.ProcessEventTyp.WindowTitle:
+                    return "Title";
+                case ExternTool.ProcessEventTyp.WindowStyle:
+                    return "Style";
+                case ExternTool.ProcessEventTyp.PositionSize:
+                    return "PositionSize";
+                case ExternTool.ProcessEventTyp.WindowExStyle:
+                    return "ExStyle";
+                case ExternTool.ProcessEventTyp.DataText:
+                    return "Datatext";
+                default:
+                    return "End";
+            }
+        }
+
+        public static ExternTool.ProcessEventTyp GetEnumEventTypValue(string strPrcEventType)
+        {
+            switch (strPrcEventType)
+            {
+                case "Start":
+                    return ExternTool.ProcessEventTyp.ProcessStart;
+                case "End":
+                    return ExternTool.ProcessEventTyp.ProcessEnd;
+                case "Basicdata":
+                    return ExternTool.ProcessEventTyp.BasicData;
+                case "Title":
+                    return ExternTool.ProcessEventTyp.WindowTitle;
+                case "Style":
+                    return ExternTool.ProcessEventTyp.WindowStyle;
+                case "PositionSize":
+                    return ExternTool.ProcessEventTyp.PositionSize;
+                case "ExStyle":
+                    return ExternTool.ProcessEventTyp.WindowExStyle;
+                case "Datatext":
+                    return ExternTool.ProcessEventTyp.DataText;
+                default:
+                    return ExternTool.ProcessEventTyp.ProcessStart;
+            }
+        }
+
 
     }
 }

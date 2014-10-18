@@ -83,10 +83,10 @@
     </Compile>
     <Compile Include="ExternTools\ExternalToolConfig.cs" />
     <Compile Include="ExternTools\ExternTool.cs" />
-    <Compile Include="ExternTools\frmConfigExternalTool.cs">
+    <Compile Include="Forms\frmConfigExternalTool.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ExternTools\frmConfigExternalTool.Designer.cs">
+    <Compile Include="Forms\frmConfigExternalTool.Designer.cs">
       <DependentUpon>frmConfigExternalTool.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmWindow.cs">
@@ -133,7 +133,7 @@
     <EmbeddedResource Include="Controls\ucProcess.resx">
       <DependentUpon>ucProcess.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ExternTools\frmConfigExternalTool.resx">
+    <EmbeddedResource Include="Forms\frmConfigExternalTool.resx">
       <DependentUpon>frmConfigExternalTool.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmWindow.resx">

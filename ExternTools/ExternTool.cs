@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace AWC.ExternTools
 {
@@ -12,6 +10,14 @@ namespace AWC.ExternTools
         private Dictionary<string ,List<ExternalToolConfig>> myProcessToWatch;
         private List<WindowHandle.Window> myWindowsForWatching;
 
+        public Dictionary<string, List<ExternalToolConfig>> ProcessToWatch
+        {
+            get { return myProcessToWatch; }
+        }
+
+        /// <summary>
+        /// eventtyp for which a Window should raise a Event
+        /// </summary>
         public enum ProcessEventTyp
         {
             ProcessStart = 0,
@@ -24,6 +30,10 @@ namespace AWC.ExternTools
             DataText = 7
         }
 
+        /// <summary>
+        /// starts the checker function for the loaded processes
+        /// </summary>
+        /// <param name="mGPrc"></param>
         public void StartCheck(AWC.Global.GProcessData mGPrc)
         {
             try
@@ -38,8 +48,11 @@ namespace AWC.ExternTools
                     }
                     
                     myGPrc = mGPrc;
+                    myGPrc.HWND.Load();
 
                     Events_GProcessData(true);
+
+                    WindowToWatch();
                 } else
                 {
                     throw new ArgumentNullException("mGPrc");
@@ -50,7 +63,36 @@ namespace AWC.ExternTools
             }
         }
 
-        public bool Load(ExternalToolConfig _ExToolConfig)
+        /// <summary>
+        /// loads a collection of configurated process to watch
+        /// </summary>
+        /// <param name="_lExToolConfig"></param>
+        /// <returns></returns>
+        public bool Load(List<ExternalToolConfig> _lExToolConfig)
+        {
+            try
+            {
+                if (_lExToolConfig != null && _lExToolConfig.Count > 0)
+                {
+                    if (myProcessToWatch != null)
+                        myProcessToWatch.Clear();
+
+                    foreach (ExternalToolConfig _exconf in _lExToolConfig)
+                    {
+                        Load(_exconf);
+                    }
+                    return true;
+                }
+                else
+                    return false;
+            } catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+                return false;
+            }
+        }
+
+        private bool Load(ExternalToolConfig _ExToolConfig)
         {
             try
             {
@@ -120,6 +162,59 @@ namespace AWC.ExternTools
             {
                 Log.cLogger.Log(ex);
                 return "";
+            }
+        }
+
+        /// <summary>
+        /// looks if a Process exist already which is in the Watcher Config and add it's Window for the Watcher
+        /// </summary>
+        private void WindowToWatch()
+        {
+            try
+            {
+                if (myGPrc != null)
+                {
+                    bool _bWinFound = false;
+
+                    WindowHandle.Window[] _AWin = new WindowHandle.Window[myGPrc.HWND.LHWND.Count];
+                    myGPrc.HWND.LHWND.CopyTo(_AWin);
+
+                    for (int i = 0; i < _AWin.Length; i++)
+                    {
+                        _bWinFound = false;
+                        if (myProcessToWatch.ContainsKey(_AWin[i].Processname))
+                        {
+                            foreach (AWC.WindowHandle.Window _WinIn in myWindowsForWatching)
+                            {
+                                if (_WinIn.Processname == _AWin[i].Processname)
+                                {
+                                    _bWinFound = true;
+                                    break;
+                                }
+                            }
+                            if (!_bWinFound)
+                            {
+                                //add Window to the Window for Watch
+                                myWindowsForWatching.Add(_AWin[i]);
+                                Events_WatchingWindows(_AWin[i], true);
+                                Log.cLogger.Log(string.Format("Add Window from Process:{0} to Windows for Watching list", _AWin[i].Processname));
+                            }
+                        }
+                    }
+                    if (_AWin != null)
+                    {
+                        for (int i = 0; i < _AWin.Length; i++)
+                        {
+                            _AWin[i].Dispose();
+                            _AWin[i] = null;
+                        }
+                        _AWin = null;
+                    }
+
+                }
+            } catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
             }
         }
 
@@ -288,12 +383,19 @@ namespace AWC.ExternTools
             }
         }
 
+        /// <summary>
+        /// If a Window is added or removed to the Watching collection
+        /// </summary>
+        /// <param name="mWindow">WindowHandle.Window to from a Process</param>
+        /// <param name="bEnable">Enable or Disable the WindowHandle.Window</param>
         private void Events_WatchingWindows(WindowHandle.Window mWindow, bool bEnable)
         {
             try
             {
                 if (bEnable)
                 {
+                    mWindow.WindowRefreshThread(true);
+
                     mWindow.WindowTitleChanged += Window_WindowTitleChanged;
                     mWindow.WindowStyleChanged += Window_WindowStyleChanged;
                     mWindow.WindowProcessExit += Window_WindowProcessExit;
@@ -304,6 +406,8 @@ namespace AWC.ExternTools
                 }
                 else
                 {
+                    mWindow.WindowRefreshThread(false);
+
                     mWindow.WindowTitleChanged -= Window_WindowTitleChanged;
                     mWindow.WindowStyleChanged -= Window_WindowStyleChanged;
                     mWindow.WindowProcessExit -= Window_WindowProcessExit;
@@ -432,6 +536,11 @@ namespace AWC.ExternTools
             }
         }
 
+        /// <summary>
+        /// handle/execute the Event for a Window
+        /// </summary>
+        /// <param name="win">the Window which raised the event</param>
+        /// <param name="strStartParam">the Parameter for the execution</param>
         protected virtual void OnLoadedEvent(WindowHandle.Window win, string strStartParam)
         {
             try

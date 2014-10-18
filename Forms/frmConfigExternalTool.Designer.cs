@@ -1,4 +1,4 @@
-﻿namespace AWC.ExternTools
+﻿namespace AWC.Forms
 {
     partial class frmConfigExternalTool
     {

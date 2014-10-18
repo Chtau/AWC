@@ -14,7 +14,7 @@ namespace AWC
         private static AWC.Global.GProcessData myGPrc;
         private Forms.frmWindow frmWS;
         private static AWC.ExternTools.ExternTool myExTool;
-        private ExternTools.frmConfigExternalTool frmCExTool;
+        private Forms.frmConfigExternalTool frmCExTool;
 
         public static AWC.ExternTools.ExternTool ExternTool
         {
@@ -227,8 +227,23 @@ namespace AWC
             {
                 if (frmCExTool == null || frmCExTool.Disposing || frmCExTool.IsDisposed || !frmCExTool.IsHandleCreated)
                 {
-                    frmCExTool = new ExternTools.frmConfigExternalTool();
+                    frmCExTool = new Forms.frmConfigExternalTool();
                     frmCExTool.ConfigDataChanged += frmCExTool_ConfigDataChanged;
+                }
+
+                if (myExTool != null)
+                {
+                    if (myExTool.ProcessToWatch != null && myExTool.ProcessToWatch.Count > 0)
+                    {
+                        List<ExternTools.ExternalToolConfig> _lExConfig = new List<ExternTools.ExternalToolConfig>();
+
+                        foreach (KeyValuePair<string, List<ExternTools.ExternalToolConfig>> _kv in myExTool.ProcessToWatch)
+                        {
+                            _lExConfig.AddRange(_kv.Value);
+                        }
+
+                        frmCExTool.LoadExternalToolConfigData(_lExConfig);
+                    }
                 }
 
                 if (!frmCExTool.Visible)
@@ -251,10 +266,7 @@ namespace AWC
             {
                 if (frmCExTool != null && frmCExTool.ExToolConfig != null && frmCExTool.ExToolConfig.Count > 0)
                 {
-                    for (int i = 0; i < frmCExTool.ExToolConfig.Count; i++)
-                    {
-                        myExTool.Load(frmCExTool.ExToolConfig[i]);
-                    }
+                    myExTool.Load(frmCExTool.ExToolConfig);
                 }
             } catch (Exception ex)
             {

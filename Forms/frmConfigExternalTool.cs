@@ -6,8 +6,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using AWC.ExternTools;
 
-namespace AWC.ExternTools
+namespace AWC.Forms
 {
     public partial class frmConfigExternalTool : Form
     {
@@ -26,6 +27,33 @@ namespace AWC.ExternTools
 
             if (mylExConfigs == null)
                 mylExConfigs = new List<ExternalToolConfig>();
+            else
+                LoadExternalToolConfigData(mylExConfigs);
+        }
+
+        public void LoadExternalToolConfigData(List<ExternalToolConfig> _lExConfigs)
+        {
+            try
+            {
+                if (_lExConfigs != null && _lExConfigs.Count > 0)
+                {
+                    mylExConfigs = _lExConfigs;
+
+                    dgvExternalToolConfig.Rows.Clear();
+
+                    for (int i = 0; i < mylExConfigs.Count; i++)
+                    {
+                        dgvExternalToolConfig.Rows.Add(new object[] { mylExConfigs[i].Enable, mylExConfigs[i].ProcessName,ExternTools.ExternalToolConfig.GetStringEventTypValue(mylExConfigs[i].ProcessEventTyp), mylExConfigs[i].ProcessStartParameter });
+                    }
+                } else
+                {
+                    if (mylExConfigs == null)
+                        mylExConfigs = new List<ExternalToolConfig>();
+                }
+            } catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+            }
         }
 
         private void tsbtnSaveConfig_Click(object sender, EventArgs e)
@@ -77,36 +105,7 @@ namespace AWC.ExternTools
 
                 if (!string.IsNullOrEmpty(strCommand) && !string.IsNullOrEmpty(strCommand) && !string.IsNullOrEmpty(strEventtyp))
                 {
-                    switch (strEventtyp)
-	                {
-                        case "Start":
-                            _PrcEventType = ExternTool.ProcessEventTyp.ProcessStart;
-                            break;
-                        case "End":
-                            _PrcEventType = ExternTool.ProcessEventTyp.ProcessEnd;
-                            break;
-                        case "Basicdata":
-                            _PrcEventType = ExternTool.ProcessEventTyp.BasicData;
-                            break;
-                        case "Title":
-                            _PrcEventType = ExternTool.ProcessEventTyp.WindowTitle;
-                            break;
-                        case "Style":
-                            _PrcEventType = ExternTool.ProcessEventTyp.WindowStyle;
-                            break;
-                        case "PositionSize":
-                            _PrcEventType = ExternTool.ProcessEventTyp.PositionSize;
-                            break;
-                        case "ExStyle":
-                            _PrcEventType = ExternTool.ProcessEventTyp.WindowExStyle;
-                            break;
-                        case "Datatext":
-                            _PrcEventType = ExternTool.ProcessEventTyp.DataText;
-                            break;
-		                default:
-                            _PrcEventType = ExternTool.ProcessEventTyp.ProcessStart;
-                            break;
-	                }
+                    _PrcEventType = ExternalToolConfig.GetEnumEventTypValue(strEventtyp);
 
                     ExternalToolConfig exCon = new ExternalToolConfig(strProcessName, _PrcEventType, strCommand, bEnable);
                     if (exCon != null)
