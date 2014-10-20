@@ -9,14 +9,59 @@ namespace AWC.Save
     public static class ConfigFileManager
     {
         private static List<ExternTools.ExternalToolConfig> myExternalConfigs;
+        private static string myConfigFileFullName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/AWCConfig.xml";
+        private static string myBackupConfigFileFullName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/bak_AWCConfig.xml";
 
+        enum BackupTyp
+        {
+            Create = 0,
+            Delete = 1,
+            Restore = 2
+        }
+
+        /// <summary>
+        /// Filename with Path for the Config file
+        /// </summary>
+        public static string ConfigFileFullName
+        {
+            get
+            {
+                return myConfigFileFullName;
+            }
+        }
+
+        /// <summary>
+        /// Collection of the external Tool Configuration
+        /// </summary>
+        public static List<ExternTools.ExternalToolConfig> ExternalToolConfigs
+        {
+            get 
+            {
+                if (myExternalConfigs == null)
+                    myExternalConfigs = new List<ExternTools.ExternalToolConfig>();
+                return myExternalConfigs; 
+            }
+            set { myExternalConfigs = value; }
+        }
+
+        /// <summary>
+        /// Save to a Configuration File
+        /// </summary>
+        /// <param name="strFullFileName"></param>
+        /// <returns></returns>
         public static bool Save(string strFullFileName)
         {
             try
             {
                 if (!string.IsNullOrEmpty(strFullFileName))
                 {
-                    using (XmlWriter writer = XmlWriter.Create(strFullFileName))
+                    BackUpConfigFile(BackupTyp.Create);
+
+                    XmlWriterSettings xmlSettings = new XmlWriterSettings();
+                    xmlSettings.NewLineOnAttributes = true;
+                    xmlSettings.Indent = true;
+
+                    using (XmlWriter writer = XmlWriter.Create(strFullFileName, xmlSettings))
                     {
                         writer.WriteStartDocument();
 
@@ -43,14 +88,92 @@ namespace AWC.Save
 
                         writer.WriteEndElement();
 
-
                         writer.WriteEndDocument();
+
+                        BackUpConfigFile(BackupTyp.Delete);
 
                         return true;
                     }
                 } else
                 {
+                    BackUpConfigFile(BackupTyp.Restore);
                     throw new ArgumentNullException("strFullFileName");
+                }
+            } catch (Exception ex)
+            {
+                BackUpConfigFile(BackupTyp.Restore);
+                Log.cLogger.Log(ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Load form the Configuration File
+        /// </summary>
+        /// <param name="strFullFileName"></param>
+        /// <returns></returns>
+        public static bool Load(string strFullFileName)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(strFullFileName) && System.IO.File.Exists(strFullFileName))
+                {
+                    using (XmlReader reader = XmlReader.Create(strFullFileName))
+                    {
+                        XmlDocument doc = new XmlDocument();
+                        doc.Load(reader);
+
+                        if (doc != null && doc.HasChildNodes)
+                        {
+                            //read the external config collection
+                            XmlNode nExConfigs = doc.SelectSingleNode("ExternalToolConfigCollection");
+                            if (nExConfigs != null && nExConfigs.HasChildNodes)
+                            {
+                                XmlNodeList node = nExConfigs.SelectNodes("ExternalToolConfig");
+
+                                if (node != null)
+                                {
+                                    if (myExternalConfigs == null)
+                                    {
+                                        myExternalConfigs = new List<ExternTools.ExternalToolConfig>();
+                                    }
+                                    else
+                                    {
+                                        myExternalConfigs.Clear();
+                                    }
+
+                                    foreach (XmlNode xnodeSingleExternalToolConfig in node)
+                                    {
+                                        if (xnodeSingleExternalToolConfig != null)
+                                        {
+                                            if (xnodeSingleExternalToolConfig.HasChildNodes)
+                                            {
+                                                string strPrc = xnodeSingleExternalToolConfig["Processname"].InnerText;
+                                                string strEvTyp = xnodeSingleExternalToolConfig["Eventtyp"].InnerText;
+                                                string strParam = xnodeSingleExternalToolConfig["Startparameter"].InnerText;
+                                                bool bEnable = Convert.ToBoolean(xnodeSingleExternalToolConfig["Enable"].InnerText);
+                                                myExternalConfigs.Add(new ExternTools.ExternalToolConfig(strPrc, ExternTools.ExternalToolConfig.GetEnumEventTypValue(strEvTyp), strParam, bEnable));
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(strFullFileName))
+                    {
+                        throw new ArgumentNullException("strFullFileName");
+                    } else
+                    {
+                        throw new System.IO.FileNotFoundException(string.Format("Can't Load Configuration, File:'{0}' not found", strFullFileName));
+                    }
                 }
             } catch (Exception ex)
             {
@@ -59,30 +182,44 @@ namespace AWC.Save
             }
         }
 
-        public static bool Load(string strFullFileName)
+        private static bool BackUpConfigFile(BackupTyp eBackuptyp)
         {
             try
             {
-                if (!string.IsNullOrEmpty(strFullFileName))
+                if (eBackuptyp == BackupTyp.Create)
                 {
-                    using (XmlReader reader = XmlReader.Create(strFullFileName))
+                    //create backup file
+                    if (System.IO.File.Exists(myConfigFileFullName))
                     {
-                        while (reader.Read())
-                        {
-                            if (reader.IsStartElement("ExternalToolConfig"))
-                            {
-
-                            }
-                        }
-
+                        System.IO.File.Copy(myConfigFileFullName, myBackupConfigFileFullName, true);
                         return true;
                     }
+                    else
+                        return false;
+                }
+                else if (eBackuptyp == BackupTyp.Delete)
+                {
+                    //remove backup file
+                    if (System.IO.File.Exists(myBackupConfigFileFullName))
+                    {
+                        System.IO.File.Delete(myBackupConfigFileFullName);
+                    }
+                    return true;
                 }
                 else
                 {
-                    throw new ArgumentNullException("strFullFileName");
+                    //restore backup file
+                    if (System.IO.File.Exists(myBackupConfigFileFullName))
+                    {
+                        System.IO.File.Copy(myBackupConfigFileFullName, myConfigFileFullName, true);
+                        BackUpConfigFile(BackupTyp.Delete);
+                        return true;
+                    }
+                    else
+                        return false;
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Log.cLogger.Log(ex);
                 return false;

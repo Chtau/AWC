@@ -42,6 +42,7 @@ namespace AWC
         {
             myGPrc = new Global.GProcessData();
             myExTool = new ExternTools.ExternTool();
+            Save.ConfigFileManager.Load(Save.ConfigFileManager.ConfigFileFullName);
         }
 
         public main()
@@ -231,7 +232,7 @@ namespace AWC
                     frmCExTool.ConfigDataChanged += frmCExTool_ConfigDataChanged;
                 }
 
-                if (myExTool != null)
+                /*if (myExTool != null)
                 {
                     if (myExTool.ProcessToWatch != null && myExTool.ProcessToWatch.Count > 0)
                     {
@@ -244,7 +245,9 @@ namespace AWC
 
                         frmCExTool.LoadExternalToolConfigData(_lExConfig);
                     }
-                }
+                }*/
+
+                frmCExTool.LoadExternalToolConfigData(Save.ConfigFileManager.ExternalToolConfigs);
 
                 if (!frmCExTool.Visible)
                 {

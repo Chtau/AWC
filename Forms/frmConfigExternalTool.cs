@@ -26,9 +26,20 @@ namespace AWC.Forms
             InitializeComponent();
 
             if (mylExConfigs == null)
+            {
                 mylExConfigs = new List<ExternalToolConfig>();
-            else
-                LoadExternalToolConfigData(mylExConfigs);
+            }
+
+            if (mylExConfigs.Count == 0)
+            {
+                if (Save.ConfigFileManager.Load(Save.ConfigFileManager.ConfigFileFullName))
+                {
+                    mylExConfigs = Save.ConfigFileManager.ExternalToolConfigs;
+                }
+            }
+
+            LoadExternalToolConfigData(mylExConfigs);
+            
         }
 
         public void LoadExternalToolConfigData(List<ExternalToolConfig> _lExConfigs)
@@ -68,6 +79,9 @@ namespace AWC.Forms
                 {
                     GetConfigFromRow(dgvExternalToolConfig.Rows[i]);
                 }
+
+                Save.ConfigFileManager.ExternalToolConfigs = mylExConfigs;
+                Save.ConfigFileManager.Save(Save.ConfigFileManager.ConfigFileFullName);
 
                 OnConfigDataChanged();
             } catch (Exception ex)
