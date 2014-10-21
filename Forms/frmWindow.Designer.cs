@@ -157,11 +157,12 @@
             // 
             // btnOpenPath
             // 
+            this.btnOpenPath.BackgroundImage = global::AWC.Res.Icons.open_24;
+            this.btnOpenPath.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnOpenPath.Location = new System.Drawing.Point(564, 46);
             this.btnOpenPath.Name = "btnOpenPath";
             this.btnOpenPath.Size = new System.Drawing.Size(23, 23);
             this.btnOpenPath.TabIndex = 10;
-            this.btnOpenPath.Text = "O";
             this.btnOpenPath.UseVisualStyleBackColor = true;
             this.btnOpenPath.Click += new System.EventHandler(this.btnOpenPath_Click);
             // 
@@ -1194,6 +1195,7 @@
             this.Controls.Add(this.tc);
             this.Controls.Add(this.plBase);
             this.Controls.Add(this.toolStrip1);
+            this.Icon = global::AWC.Res.Icons.window_481;
             this.Name = "frmWindow";
             this.Text = "Window";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmWindowConfig_FormClosing);

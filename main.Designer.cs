@@ -70,6 +70,7 @@
             this.tsmiClose.Name = "tsmiClose";
             this.tsmiClose.Size = new System.Drawing.Size(188, 22);
             this.tsmiClose.Text = "Close";
+            this.tsmiClose.Image = AWC.Res.Icons.close_red_24;
             this.tsmiClose.Click += new System.EventHandler(this.tsmiClose_Click);
             // 
             // showDebugWindowToolStripMenuItem
@@ -85,6 +86,7 @@
             this.windowStyleToolStripMenuItem.Name = "windowStyleToolStripMenuItem";
             this.windowStyleToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.windowStyleToolStripMenuItem.Text = "Window Data";
+            this.windowStyleToolStripMenuItem.Image = AWC.Res.Icons.window_48;
             this.windowStyleToolStripMenuItem.Click += new System.EventHandler(this.windowStyleToolStripMenuItem_Click);
             // 
             // writeLogToFileToolStripMenuItem
@@ -92,6 +94,7 @@
             this.writeLogToFileToolStripMenuItem.Name = "writeLogToFileToolStripMenuItem";
             this.writeLogToFileToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.writeLogToFileToolStripMenuItem.Text = "Write Log to File";
+            this.writeLogToFileToolStripMenuItem.Image = AWC.Res.Icons.writefile_24;
             this.writeLogToFileToolStripMenuItem.Click += new System.EventHandler(this.writeLogToFileToolStripMenuItem_Click);
             // 
             // processCheckerToolStripMenuItem
@@ -100,6 +103,7 @@
             this.processCheckerToolStripMenuItem.Name = "processCheckerToolStripMenuItem";
             this.processCheckerToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.processCheckerToolStripMenuItem.Text = "Process checker";
+            this.processCheckerToolStripMenuItem.Image = AWC.Res.Icons.checker_green_24;
             this.processCheckerToolStripMenuItem.Click += new System.EventHandler(this.processCheckerToolStripMenuItem_Click);
             // 
             // gbDebugText
@@ -141,6 +145,7 @@
             this.configCheckerToolStripMenuItem.Name = "configCheckerToolStripMenuItem";
             this.configCheckerToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.configCheckerToolStripMenuItem.Text = "Config checker";
+            this.configCheckerToolStripMenuItem.Image = AWC.Res.Icons.config_dark_24;
             this.configCheckerToolStripMenuItem.Click += new System.EventHandler(this.configCheckerToolStripMenuItem_Click);
             // 
             // main

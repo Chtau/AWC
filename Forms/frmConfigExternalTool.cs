@@ -133,5 +133,38 @@ namespace AWC.Forms
                 Log.cLogger.Log(ex);
             }
         }
+
+        private void tsbtnAddRow_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                dgvExternalToolConfig.Rows.Add();
+
+            } catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+            }
+        }
+
+        private void tsbtnRemoveRow_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                for (int i = 0; i < dgvExternalToolConfig.Rows.Count; i++)
+                {
+                    if (dgvExternalToolConfig.Rows[i].Selected || dgvExternalToolConfig["colProcessName", i].Selected
+                        || dgvExternalToolConfig["colStartCommand", i].Selected || dgvExternalToolConfig["colEventTyp", i].Selected
+                        || dgvExternalToolConfig["colEnable", i].Selected)
+                    {
+                        dgvExternalToolConfig.Rows.RemoveAt(i);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+            }
+        }
+
     }
 }
