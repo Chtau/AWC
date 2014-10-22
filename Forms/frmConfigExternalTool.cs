@@ -54,7 +54,7 @@ namespace AWC.Forms
 
                     for (int i = 0; i < mylExConfigs.Count; i++)
                     {
-                        dgvExternalToolConfig.Rows.Add(new object[] { mylExConfigs[i].Enable, mylExConfigs[i].ProcessName,ExternTools.ExternalToolConfig.GetStringEventTypValue(mylExConfigs[i].ProcessEventTyp), mylExConfigs[i].ProcessStartParameter });
+                        dgvExternalToolConfig.Rows.Add(new object[] { mylExConfigs[i].Enable, mylExConfigs[i].ProcessName,ExternTools.ExternalToolConfig.GetStringEventTypValue(mylExConfigs[i].ProcessEventTyp),ExternalToolConfig.GetStringEventExecuteTypValue(mylExConfigs[i].ProcessEventExecuteTyp), mylExConfigs[i].ProcessStartParameter });
                     }
                 } else
                 {
@@ -109,19 +109,23 @@ namespace AWC.Forms
                 string strProcessName = "";
                 string strCommand = "";
                 string strEventtyp = "";
+                string strExeEventtyp = "";
                 bool bEnable = false;
                 ExternTool.ProcessEventTyp _PrcEventType = ExternTool.ProcessEventTyp.ProcessStart;
+                ExternTool.ProcessEventExecuteTyp _PrcExeEventType = ExternTool.ProcessEventExecuteTyp.Command;
 
                 strProcessName = _row.Cells["colProcessName"].Value as string;
                 strCommand = _row.Cells["colStartCommand"].Value as string;
-                strEventtyp = _row.Cells["colEventTyp"].Value as string;
+                strEventtyp = _row.Cells["colWindowEventTyp"].Value as string;
+                strExeEventtyp = _row.Cells["colExecuteEventtyp"].Value as string;
                 bEnable = Convert.ToBoolean(_row.Cells["colEnable"].Value);
 
-                if (!string.IsNullOrEmpty(strCommand) && !string.IsNullOrEmpty(strCommand) && !string.IsNullOrEmpty(strEventtyp))
+                if (!string.IsNullOrEmpty(strCommand) && !string.IsNullOrEmpty(strCommand) && !string.IsNullOrEmpty(strEventtyp) && !string.IsNullOrEmpty(strExeEventtyp))
                 {
                     _PrcEventType = ExternalToolConfig.GetEnumEventTypValue(strEventtyp);
+                    _PrcExeEventType = ExternalToolConfig.GetEnumEventExecuteTypValue(strExeEventtyp);
 
-                    ExternalToolConfig exCon = new ExternalToolConfig(strProcessName, _PrcEventType, strCommand, bEnable);
+                    ExternalToolConfig exCon = new ExternalToolConfig(strProcessName, _PrcEventType, strCommand, bEnable, _PrcExeEventType);
                     if (exCon != null)
                     {
                         mylExConfigs.Add(exCon);
@@ -153,7 +157,7 @@ namespace AWC.Forms
                 for (int i = 0; i < dgvExternalToolConfig.Rows.Count; i++)
                 {
                     if (dgvExternalToolConfig.Rows[i].Selected || dgvExternalToolConfig["colProcessName", i].Selected
-                        || dgvExternalToolConfig["colStartCommand", i].Selected || dgvExternalToolConfig["colEventTyp", i].Selected
+                        || dgvExternalToolConfig["colStartCommand", i].Selected || dgvExternalToolConfig["colWindowEventTyp", i].Selected
                         || dgvExternalToolConfig["colEnable", i].Selected)
                     {
                         dgvExternalToolConfig.Rows.RemoveAt(i);

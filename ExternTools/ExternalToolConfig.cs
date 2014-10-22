@@ -7,6 +7,13 @@ namespace AWC.ExternTools
         private AWC.ExternTools.ExternTool.ProcessEventTyp myProcessEventTyp;
         private string myProcessStartParameter;
         private bool myEnable;
+        private AWC.ExternTools.ExternTool.ProcessEventExecuteTyp myProcessEventExecuteTyp;
+
+        public AWC.ExternTools.ExternTool.ProcessEventExecuteTyp ProcessEventExecuteTyp
+        {
+            get { return myProcessEventExecuteTyp; }
+            set { myProcessEventExecuteTyp = value; }
+        }
 
         public bool Enable
         {
@@ -45,6 +52,15 @@ namespace AWC.ExternTools
             myProcessEventTyp = _PrcoessEventTyp;
             myProcessStartParameter = _ProcessStartParameter;
             myEnable = _Enable;
+        }
+
+        public ExternalToolConfig(string _ProcessName, AWC.ExternTools.ExternTool.ProcessEventTyp _PrcoessEventTyp, string _ProcessStartParameter, bool _Enable, AWC.ExternTools.ExternTool.ProcessEventExecuteTyp _ProcessEventExecuteTyp)
+        {
+            myProcessName = _ProcessName;
+            myProcessEventTyp = _PrcoessEventTyp;
+            myProcessStartParameter = _ProcessStartParameter;
+            myEnable = _Enable;
+            myProcessEventExecuteTyp = _ProcessEventExecuteTyp;
         }
 
         public static string GetStringEventTypValue(ExternTool.ProcessEventTyp _ProcessEventTyp)
@@ -97,6 +113,26 @@ namespace AWC.ExternTools
             }
         }
 
+        public static ExternTool.ProcessEventExecuteTyp GetEnumEventExecuteTypValue(string strPrcExeEventTyp)
+        {
+            switch (strPrcExeEventTyp)
+            {
+                case "Command":
+                    return ExternTool.ProcessEventExecuteTyp.Command;
+                default:
+                    return ExternTool.ProcessEventExecuteTyp.Command;
+            }
+        }
 
+        public static string GetStringEventExecuteTypValue(ExternTool.ProcessEventExecuteTyp _ProcessEventExecuteTyp)
+        {
+            switch (_ProcessEventExecuteTyp)
+            {
+                case ExternTool.ProcessEventExecuteTyp.Command:
+                    return "Command";
+                default:
+                    return "Command";
+            }
+        }
     }
 }

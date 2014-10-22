@@ -78,6 +78,7 @@ namespace AWC.Save
 
                                     writer.WriteElementString("Processname", _ExToolCon.ProcessName);
                                     writer.WriteElementString("Eventtyp", ExternTools.ExternalToolConfig.GetStringEventTypValue(_ExToolCon.ProcessEventTyp));
+                                    writer.WriteElementString("ExecuteEventtyp", ExternTools.ExternalToolConfig.GetStringEventExecuteTypValue(_ExToolCon.ProcessEventExecuteTyp));
                                     writer.WriteElementString("Startparameter", _ExToolCon.ProcessStartParameter);
                                     writer.WriteElementString("Enable", _ExToolCon.Enable.ToString());
 
@@ -150,9 +151,10 @@ namespace AWC.Save
                                             {
                                                 string strPrc = xnodeSingleExternalToolConfig["Processname"].InnerText;
                                                 string strEvTyp = xnodeSingleExternalToolConfig["Eventtyp"].InnerText;
+                                                string strExeEvTyp = xnodeSingleExternalToolConfig["ExecuteEventtyp"].InnerText;
                                                 string strParam = xnodeSingleExternalToolConfig["Startparameter"].InnerText;
                                                 bool bEnable = Convert.ToBoolean(xnodeSingleExternalToolConfig["Enable"].InnerText);
-                                                myExternalConfigs.Add(new ExternTools.ExternalToolConfig(strPrc, ExternTools.ExternalToolConfig.GetEnumEventTypValue(strEvTyp), strParam, bEnable));
+                                                myExternalConfigs.Add(new ExternTools.ExternalToolConfig(strPrc, ExternTools.ExternalToolConfig.GetEnumEventTypValue(strEvTyp), strParam, bEnable, ExternTools.ExternalToolConfig.GetEnumEventExecuteTypValue(strExeEvTyp)));
 
                                             }
                                         }

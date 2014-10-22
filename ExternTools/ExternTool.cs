@@ -30,6 +30,11 @@ namespace AWC.ExternTools
             DataText = 7
         }
 
+        public enum ProcessEventExecuteTyp
+        {
+            Command = 0
+        }
+
         /// <summary>
         /// starts the checker function for the loaded processes
         /// </summary>
@@ -134,7 +139,7 @@ namespace AWC.ExternTools
             }
         }
 
-        private string CheckProcessForEvents(string strProcessName, ProcessEventTyp ePrcEventTyp)
+        private ExternalToolConfig CheckProcessForEvents(string strProcessName, ProcessEventTyp ePrcEventTyp)
         {
             try
             {
@@ -146,22 +151,22 @@ namespace AWC.ExternTools
                         {
                             if (ePrcEventTyp == _exToolC.ProcessEventTyp)
                             {
-                                return _exToolC.ProcessStartParameter;
+                                return _exToolC;
                             }
                         }
-                        return "";
+                        return null;
                     } else
                     {
-                        return "";
+                        return null;
                     }
                 } else
                 {
-                    return "";
+                    return null;
                 }
             } catch (Exception ex)
             {
                 Log.cLogger.Log(ex);
-                return "";
+                return null;
             }
         }
 
@@ -247,8 +252,8 @@ namespace AWC.ExternTools
             {
                 if (myProcessToWatch != null && myProcessToWatch.ContainsKey(e.Window.Processname))
                 {
-                    string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.ProcessEnd);
-                    if (!string.IsNullOrEmpty(_ret))
+                    ExternalToolConfig _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.ProcessEnd);
+                    if (_ret != null)
                     {
                         //Process exit event
                         OnLoadedEvent(e.Window, _ret);
@@ -270,8 +275,8 @@ namespace AWC.ExternTools
             {
                 if (myProcessToWatch != null && myProcessToWatch.ContainsKey(e.Window.Processname))
                 {
-                    string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.ProcessStart);
-                    if (!string.IsNullOrEmpty(_ret))
+                    ExternalToolConfig _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.ProcessStart);
+                    if (_ret != null)
                     {
                         //Process exit event
                         OnLoadedEvent(e.Window, _ret);
@@ -427,8 +432,8 @@ namespace AWC.ExternTools
         {
             try
             {
-                string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.BasicData);
-                if (!string.IsNullOrEmpty(_ret))
+                ExternalToolConfig _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.BasicData);
+                if (_ret != null)
                 {
                     //Process exit event
                     OnLoadedEvent(e.Window, _ret);
@@ -455,8 +460,8 @@ namespace AWC.ExternTools
         {
             try
             {
-                string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.WindowExStyle);
-                if (!string.IsNullOrEmpty(_ret))
+                ExternalToolConfig _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.WindowExStyle);
+                if (_ret != null)
                 {
                     //Process exit event
                     OnLoadedEvent(e.Window, _ret);
@@ -472,8 +477,8 @@ namespace AWC.ExternTools
         {
             try
             {
-                string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.PositionSize);
-                if (!string.IsNullOrEmpty(_ret))
+                ExternalToolConfig _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.PositionSize);
+                if (_ret != null)
                 {
                     //Process exit event
                     OnLoadedEvent(e.Window, _ret);
@@ -489,8 +494,8 @@ namespace AWC.ExternTools
         {
             try
             {
-                string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.ProcessEnd);
-                if (!string.IsNullOrEmpty(_ret))
+                ExternalToolConfig _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.ProcessEnd);
+                if (_ret != null)
                 {
                     //Process exit event
                     OnLoadedEvent(e.Window, _ret);
@@ -506,8 +511,8 @@ namespace AWC.ExternTools
         {
             try
             {
-                string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.WindowStyle);
-                if (!string.IsNullOrEmpty(_ret))
+                ExternalToolConfig _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.WindowStyle);
+                if (_ret != null)
                 {
                     //Process exit event
                     OnLoadedEvent(e.Window, _ret);
@@ -523,8 +528,8 @@ namespace AWC.ExternTools
         {
             try
             {
-                string _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.WindowTitle);
-                if (!string.IsNullOrEmpty(_ret))
+                ExternalToolConfig _ret = CheckProcessForEvents(e.Window.Processname, ProcessEventTyp.WindowTitle);
+                if (_ret != null)
                 {
                     //Process exit event
                     OnLoadedEvent(e.Window, _ret);
@@ -540,8 +545,8 @@ namespace AWC.ExternTools
         /// handle/execute the Event for a Window
         /// </summary>
         /// <param name="win">the Window which raised the event</param>
-        /// <param name="strStartParam">the Parameter for the execution</param>
-        protected virtual void OnLoadedEvent(WindowHandle.Window win, string strStartParam)
+        /// <param name="exConfig">the Parameter for the execution</param>
+        protected virtual void OnLoadedEvent(WindowHandle.Window win, ExternalToolConfig exConfig)
         {
             try
             {
@@ -549,7 +554,13 @@ namespace AWC.ExternTools
                 {
                     Log.cLogger.Log(string.Format("Loaded event raised for Process:'{0}'", win.Processname));
 
-                    System.Diagnostics.Process.Start(strStartParam);
+                    if (exConfig.ProcessEventExecuteTyp == ProcessEventExecuteTyp.Command)
+                    {
+                        System.Diagnostics.Process.Start(exConfig.ProcessStartParameter);
+                    } else
+                    {
+                        System.Diagnostics.Process.Start(exConfig.ProcessStartParameter);
+                    }
                 } else
                 {
                     Log.cLogger.Log("Loaded event can't raised Window data is null");

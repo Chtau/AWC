@@ -37,7 +37,8 @@
             this.dgvExternalToolConfig = new System.Windows.Forms.DataGridView();
             this.colEnable = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.colProcessName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colEventTyp = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.colWindowEventTyp = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.colExecuteEventtyp = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.colStartCommand = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvExternalToolConfig)).BeginInit();
@@ -53,7 +54,7 @@
             this.toolStripSeparator2});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(547, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(644, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -105,13 +106,14 @@
             this.dgvExternalToolConfig.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colEnable,
             this.colProcessName,
-            this.colEventTyp,
+            this.colWindowEventTyp,
+            this.colExecuteEventtyp,
             this.colStartCommand});
             this.dgvExternalToolConfig.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvExternalToolConfig.Location = new System.Drawing.Point(0, 25);
             this.dgvExternalToolConfig.Name = "dgvExternalToolConfig";
             this.dgvExternalToolConfig.ShowCellErrors = false;
-            this.dgvExternalToolConfig.Size = new System.Drawing.Size(547, 247);
+            this.dgvExternalToolConfig.Size = new System.Drawing.Size(644, 255);
             this.dgvExternalToolConfig.TabIndex = 1;
             // 
             // colEnable
@@ -129,10 +131,10 @@
             this.colProcessName.Name = "colProcessName";
             this.colProcessName.Width = 120;
             // 
-            // colEventTyp
+            // colWindowEventTyp
             // 
-            this.colEventTyp.HeaderText = "Eventtyp";
-            this.colEventTyp.Items.AddRange(new object[] {
+            this.colWindowEventTyp.HeaderText = "Window Eventtyp";
+            this.colWindowEventTyp.Items.AddRange(new object[] {
             "Start",
             "End",
             "Basicdata",
@@ -141,7 +143,14 @@
             "PositionSize",
             "ExStyle",
             "Datatext"});
-            this.colEventTyp.Name = "colEventTyp";
+            this.colWindowEventTyp.Name = "colWindowEventTyp";
+            // 
+            // colExecuteEventtyp
+            // 
+            this.colExecuteEventtyp.HeaderText = "Execute Eventtyp";
+            this.colExecuteEventtyp.Items.AddRange(new object[] {
+            "Command"});
+            this.colExecuteEventtyp.Name = "colExecuteEventtyp";
             // 
             // colStartCommand
             // 
@@ -154,12 +163,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(547, 272);
+            this.ClientSize = new System.Drawing.Size(644, 280);
             this.Controls.Add(this.dgvExternalToolConfig);
             this.Controls.Add(this.toolStrip1);
+            this.Icon = global::AWC.Res.Icons.system_config_dark_64_Icon;
             this.Name = "frmConfigExternalTool";
             this.Text = "External Tool Configuration";
-            this.Icon = AWC.Res.Icons.system_config_dark_64_Icon;
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvExternalToolConfig)).EndInit();
@@ -172,14 +181,15 @@
 
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.DataGridView dgvExternalToolConfig;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn colEnable;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colProcessName;
-        private System.Windows.Forms.DataGridViewComboBoxColumn colEventTyp;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colStartCommand;
         private System.Windows.Forms.ToolStripButton tsbtnSaveConfig;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton tsbtnAddRow;
         private System.Windows.Forms.ToolStripButton tsbtnRemoveRow;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn colEnable;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colProcessName;
+        private System.Windows.Forms.DataGridViewComboBoxColumn colWindowEventTyp;
+        private System.Windows.Forms.DataGridViewComboBoxColumn colExecuteEventtyp;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colStartCommand;
     }
 }
