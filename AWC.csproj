@@ -69,6 +69,36 @@
     <Compile Include="Controls\ucCostumBorder.Designer.cs">
       <DependentUpon>ucCostumBorder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ucEditExecuteCommandBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ucEditExecuteCommandBase.Designer.cs">
+      <DependentUpon>ucEditExecuteCommandBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ucEditExecuteCommandBorder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ucEditExecuteCommandBorder.Designer.cs">
+      <DependentUpon>ucEditExecuteCommandBorder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ucEditExecuteCommandCommand.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ucEditExecuteCommandCommand.Designer.cs">
+      <DependentUpon>ucEditExecuteCommandCommand.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ucEditExecuteCommandPosition.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ucEditExecuteCommandPosition.Designer.cs">
+      <DependentUpon>ucEditExecuteCommandPosition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ucEditExecuteCommandSize.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ucEditExecuteCommandSize.Designer.cs">
+      <DependentUpon>ucEditExecuteCommandSize.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ucModules.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -88,6 +118,12 @@
     </Compile>
     <Compile Include="Forms\frmConfigExternalTool.Designer.cs">
       <DependentUpon>frmConfigExternalTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmEditExecuteCommand.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmEditExecuteCommand.Designer.cs">
+      <DependentUpon>frmEditExecuteCommand.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmWindow.cs">
       <SubType>Form</SubType>
@@ -133,6 +169,21 @@
     <EmbeddedResource Include="Controls\ucCostumBorder.resx">
       <DependentUpon>ucCostumBorder.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ucEditExecuteCommandBase.resx">
+      <DependentUpon>ucEditExecuteCommandBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ucEditExecuteCommandBorder.resx">
+      <DependentUpon>ucEditExecuteCommandBorder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ucEditExecuteCommandCommand.resx">
+      <DependentUpon>ucEditExecuteCommandCommand.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ucEditExecuteCommandPosition.resx">
+      <DependentUpon>ucEditExecuteCommandPosition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ucEditExecuteCommandSize.resx">
+      <DependentUpon>ucEditExecuteCommandSize.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ucModules.resx">
       <DependentUpon>ucModules.cs</DependentUpon>
     </EmbeddedResource>
@@ -141,6 +192,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmConfigExternalTool.resx">
       <DependentUpon>frmConfigExternalTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmEditExecuteCommand.resx">
+      <DependentUpon>frmEditExecuteCommand.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmWindow.resx">
       <DependentUpon>frmWindow.cs</DependentUpon>

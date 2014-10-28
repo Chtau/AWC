@@ -158,13 +158,61 @@ namespace AWC.Forms
                 {
                     if (dgvExternalToolConfig.Rows[i].Selected || dgvExternalToolConfig["colProcessName", i].Selected
                         || dgvExternalToolConfig["colStartCommand", i].Selected || dgvExternalToolConfig["colWindowEventTyp", i].Selected
-                        || dgvExternalToolConfig["colEnable", i].Selected)
+                        || dgvExternalToolConfig["colEnable", i].Selected || dgvExternalToolConfig["colExecuteEventtyp", i].Selected)
                     {
                         dgvExternalToolConfig.Rows.RemoveAt(i);
                     }
                 }
             }
             catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+            }
+        }
+
+        private void dgvExternalToolConfig_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                if (e.ColumnIndex == dgvExternalToolConfig.Columns["colEditCommand"].Index)
+                {
+                    OnButtonCommandEdit(dgvExternalToolConfig.Rows[e.RowIndex]);
+                }
+            } catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+            }
+        }
+
+        protected virtual void OnButtonCommandEdit(DataGridViewRow dgvRow)
+        {
+            try
+            {
+                frmEditExecuteCommand frmEditExe = new frmEditExecuteCommand();
+                frmEditExe.ExecuteCommandString = (string)dgvRow.Cells["colStartCommand"].Value;
+                frmEditExe.Load(ExternalToolConfig.GetEnumEventExecuteTypValue((string)dgvRow.Cells["colExecuteEventtyp"].Value));
+                if (frmEditExe.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    dgvRow.Cells["colStartCommand"].Value = frmEditExe.ExecuteCommandString;
+                }
+            } catch (Exception ex)
+            {
+                Log.cLogger.Log(ex);
+            }
+        }
+
+        private void dgvExternalToolConfig_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            try
+            {
+                if (e.ColumnIndex == dgvExternalToolConfig.Columns["colEditCommand"].Index && e.RowIndex >= 0)
+                {
+                    e.Paint(e.CellBounds, DataGridViewPaintParts.All);
+
+                    e.Graphics.DrawImage(Res.Icons.config_dark_24, e.CellBounds.Left + 2, e.CellBounds.Top + 2, 17, 17);
+                    e.Handled = true;
+                }
+            } catch (Exception ex)
             {
                 Log.cLogger.Log(ex);
             }

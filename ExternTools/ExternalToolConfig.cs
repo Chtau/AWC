@@ -119,6 +119,12 @@ namespace AWC.ExternTools
             {
                 case "Command":
                     return ExternTool.ProcessEventExecuteTyp.Command;
+                case "Position":
+                    return ExternTool.ProcessEventExecuteTyp.Position;
+                case "Size":
+                    return ExternTool.ProcessEventExecuteTyp.Size;
+                case "Border":
+                    return ExternTool.ProcessEventExecuteTyp.Border;
                 default:
                     return ExternTool.ProcessEventExecuteTyp.Command;
             }
@@ -130,6 +136,12 @@ namespace AWC.ExternTools
             {
                 case ExternTool.ProcessEventExecuteTyp.Command:
                     return "Command";
+                case ExternTool.ProcessEventExecuteTyp.Position:
+                    return "Position";
+                case ExternTool.ProcessEventExecuteTyp.Size:
+                    return "Size";
+                case ExternTool.ProcessEventExecuteTyp.Border:
+                    return "Border";
                 default:
                     return "Command";
             }

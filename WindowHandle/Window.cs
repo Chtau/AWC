@@ -115,7 +115,7 @@ namespace AWC.WindowHandle
         {
             get 
             {
-                if (myWindowRectangle == null)
+                if (myWindowRectangle == null || myWindowRectangle.IsEmpty)
                 {
                     GetPositionSize();
                 }
@@ -319,7 +319,7 @@ namespace AWC.WindowHandle
 
         protected virtual void OnWindowStyleChanged(Public.ProcessEventArgs e)
         {
-            if (WindowStyleChanged != null)
+            if (WindowStyleChanged != null && !myWindowProcess.HasExited)
                 WindowStyleChanged(this, e);
         }
 
@@ -401,7 +401,7 @@ namespace AWC.WindowHandle
 
         protected virtual void OnWindowExStyleChanged(Public.ProcessEventArgs e)
         {
-            if (WindowExStyleChanged != null)
+            if (WindowExStyleChanged != null && !myWindowProcess.HasExited)
                 WindowExStyleChanged(this, e);
         }
 
@@ -485,7 +485,7 @@ namespace AWC.WindowHandle
 
         private void GetTimes()
         {
-            if (myWindowProcess != null)
+            if (myWindowProcess != null && !myWindowProcess.HasExited)
             {
                 if (myProcessStartTime == DateTime.MinValue)
                     myProcessStartTime = myWindowProcess.StartTime;
@@ -498,13 +498,13 @@ namespace AWC.WindowHandle
 
         protected virtual void OnWindowBasicChanged(Public.ProcessEventArgs e)
         {
-            if (WindowBasicChanged != null)
+            if (WindowBasicChanged != null && !myWindowProcess.HasExited)
                 WindowBasicChanged(this, e);
         }
 
         private void GetTitle()
         {
-            if (myWindowProcess != null)
+            if (myWindowProcess != null && !myWindowProcess.HasExited)
             {
                 try
                 {
@@ -523,7 +523,7 @@ namespace AWC.WindowHandle
 
         protected virtual void OnWindowTitleChanged(Public.ProcessEventArgs e)
         {
-            if (WindowTitleChanged != null)
+            if (WindowTitleChanged != null && !myWindowProcess.HasExited)
                 WindowTitleChanged(this, e);
         }
 
@@ -546,7 +546,7 @@ namespace AWC.WindowHandle
                     }
                 }
 
-                if (myWindowProcess != null)
+                if (myWindowProcess != null && !myWindowProcess.HasExited)
                 {
                     myWindowProcess.Refresh();
                 }

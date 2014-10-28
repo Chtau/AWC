@@ -210,6 +210,7 @@ namespace AWC
                         myExTool = new ExternTools.ExternTool();
 
                     myExTool.StartCheck(myGPrc);
+                    myExTool.Load(Save.ConfigFileManager.ExternalToolConfigs);
                 }
                 else
                 {

@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.tsNavBar = new System.Windows.Forms.ToolStrip();
             this.tsbtnSaveConfig = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsbtnAddRow = new System.Windows.Forms.ToolStripButton();
@@ -40,23 +40,24 @@
             this.colWindowEventTyp = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.colExecuteEventtyp = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.colStartCommand = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.toolStrip1.SuspendLayout();
+            this.colEditCommand = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.tsNavBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvExternalToolConfig)).BeginInit();
             this.SuspendLayout();
             // 
-            // toolStrip1
+            // tsNavBar
             // 
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsNavBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbtnSaveConfig,
             this.toolStripSeparator1,
             this.tsbtnAddRow,
             this.tsbtnRemoveRow,
             this.toolStripSeparator2});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(644, 25);
-            this.toolStrip1.TabIndex = 0;
-            this.toolStrip1.Text = "toolStrip1";
+            this.tsNavBar.Location = new System.Drawing.Point(0, 0);
+            this.tsNavBar.Name = "tsNavBar";
+            this.tsNavBar.Size = new System.Drawing.Size(644, 25);
+            this.tsNavBar.TabIndex = 0;
+            this.tsNavBar.Text = "toolStrip1";
             // 
             // tsbtnSaveConfig
             // 
@@ -108,13 +109,17 @@
             this.colProcessName,
             this.colWindowEventTyp,
             this.colExecuteEventtyp,
-            this.colStartCommand});
+            this.colStartCommand,
+            this.colEditCommand});
             this.dgvExternalToolConfig.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvExternalToolConfig.Location = new System.Drawing.Point(0, 25);
             this.dgvExternalToolConfig.Name = "dgvExternalToolConfig";
+            this.dgvExternalToolConfig.RowHeadersWidth = 35;
             this.dgvExternalToolConfig.ShowCellErrors = false;
-            this.dgvExternalToolConfig.Size = new System.Drawing.Size(644, 255);
+            this.dgvExternalToolConfig.Size = new System.Drawing.Size(644, 279);
             this.dgvExternalToolConfig.TabIndex = 1;
+            this.dgvExternalToolConfig.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvExternalToolConfig_CellContentClick);
+            this.dgvExternalToolConfig.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvExternalToolConfig_CellPainting);
             // 
             // colEnable
             // 
@@ -149,28 +154,40 @@
             // 
             this.colExecuteEventtyp.HeaderText = "Execute Eventtyp";
             this.colExecuteEventtyp.Items.AddRange(new object[] {
-            "Command"});
+            "Command",
+            "Position",
+            "Size",
+            "Border"});
             this.colExecuteEventtyp.Name = "colExecuteEventtyp";
             // 
             // colStartCommand
             // 
-            this.colStartCommand.FillWeight = 210F;
+            this.colStartCommand.FillWeight = 188F;
             this.colStartCommand.HeaderText = "Command";
             this.colStartCommand.Name = "colStartCommand";
-            this.colStartCommand.Width = 210;
+            this.colStartCommand.Width = 188;
+            // 
+            // colEditCommand
+            // 
+            this.colEditCommand.FillWeight = 22F;
+            this.colEditCommand.HeaderText = "";
+            this.colEditCommand.Name = "colEditCommand";
+            this.colEditCommand.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.colEditCommand.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.colEditCommand.Width = 22;
             // 
             // frmConfigExternalTool
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(644, 280);
+            this.ClientSize = new System.Drawing.Size(644, 304);
             this.Controls.Add(this.dgvExternalToolConfig);
-            this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.tsNavBar);
             this.Icon = global::AWC.Res.Icons.system_config_dark_64_Icon;
             this.Name = "frmConfigExternalTool";
             this.Text = "External Tool Configuration";
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
+            this.tsNavBar.ResumeLayout(false);
+            this.tsNavBar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvExternalToolConfig)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -179,7 +196,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStrip tsNavBar;
         private System.Windows.Forms.DataGridView dgvExternalToolConfig;
         private System.Windows.Forms.ToolStripButton tsbtnSaveConfig;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -191,5 +208,6 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn colWindowEventTyp;
         private System.Windows.Forms.DataGridViewComboBoxColumn colExecuteEventtyp;
         private System.Windows.Forms.DataGridViewTextBoxColumn colStartCommand;
+        private System.Windows.Forms.DataGridViewButtonColumn colEditCommand;
     }
 }

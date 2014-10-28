@@ -32,7 +32,10 @@ namespace AWC.ExternTools
 
         public enum ProcessEventExecuteTyp
         {
-            Command = 0
+            Command = 0,
+            Position = 1,
+            Size = 2,
+            Border = 3
         }
 
         /// <summary>
@@ -149,7 +152,7 @@ namespace AWC.ExternTools
                     {
                         foreach (ExternalToolConfig _exToolC in myProcessToWatch[strProcessName])
                         {
-                            if (ePrcEventTyp == _exToolC.ProcessEventTyp)
+                            if (ePrcEventTyp == _exToolC.ProcessEventTyp && _exToolC.Enable)
                             {
                                 return _exToolC;
                             }
@@ -554,12 +557,97 @@ namespace AWC.ExternTools
                 {
                     Log.cLogger.Log(string.Format("Loaded event raised for Process:'{0}'", win.Processname));
 
-                    if (exConfig.ProcessEventExecuteTyp == ProcessEventExecuteTyp.Command)
+                    switch (exConfig.ProcessEventExecuteTyp)
                     {
-                        System.Diagnostics.Process.Start(exConfig.ProcessStartParameter);
-                    } else
-                    {
-                        System.Diagnostics.Process.Start(exConfig.ProcessStartParameter);
+                        case ProcessEventExecuteTyp.Command:
+                            Log.cLogger.Log(string.Format("Command execute event , Process:'{0}' ParamString:'{1}'", win.Processname, exConfig.ProcessStartParameter));
+                            System.Diagnostics.Process.Start(exConfig.ProcessStartParameter);
+                            break;
+                        case ProcessEventExecuteTyp.Position:
+                            string[] strPos = exConfig.ProcessStartParameter.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries);                         
+                            int iXCor = win.Rectangle.X;
+                            int iYCor = win.Rectangle.Y;
+                            if (strPos.Length > 0)
+                            {
+                                for (int i = 0; i < strPos.Length; i++)
+                                {
+                                    if (strPos[i].StartsWith("X:"))
+                                    {
+                                        iXCor = Convert.ToInt32(strPos[i].Replace("X:", "").Trim());
+                                    }
+                                    else if (strPos[i].StartsWith("Y:"))
+                                    {
+                                        iYCor = Convert.ToInt32(strPos[i].Replace("Y:", "").Trim());
+                                    } else
+                                    {
+                                        Log.cLogger.Log(string.Format("Position execute event has a unkown parameter, Process:'{0}' ParamString:'{1}' Current Param:'{2}'", win.Processname, exConfig.ProcessStartParameter, strPos[i]));
+                                    }
+                                }
+
+                                Log.cLogger.Log(string.Format("Position execute event change Value (new X Cor:'{2}', new Y Cor:'{3}'), Process:'{0}' ParamString:'{1}'", win.Processname, exConfig.ProcessStartParameter, iXCor.ToString(), iYCor.ToString()));
+                                win.SetSizeLocation(iXCor, iYCor, win.Rectangle.Width, win.Rectangle.Height);
+                            } else
+                            {
+                                Log.cLogger.Log(string.Format("Position execute event has no arguments, Process:'{0}' ParamString:'{1}'", win.Processname, exConfig.ProcessStartParameter));
+                            }
+                            
+                            break;
+                        case ProcessEventExecuteTyp.Size:
+                            string[] strSize = exConfig.ProcessStartParameter.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries);                         
+                            int iWidth = win.Rectangle.Width;
+                            int iHeight = win.Rectangle.Height;
+                            if (strSize.Length > 0)
+                            {
+                                for (int i = 0; i < strSize.Length; i++)
+                                {
+                                    if (strSize[i].StartsWith("H:"))
+                                    {
+                                        iHeight = Convert.ToInt32(strSize[i].Replace("H:", "").Trim());
+                                    } else if (strSize[i].StartsWith("W:"))
+                                    {
+                                        iWidth = Convert.ToInt32(strSize[i].Replace("W:", "").Trim());
+                                    } else
+                                    {
+                                        Log.cLogger.Log(string.Format("Size execute event has a unkown parameter, Process:'{0}' ParamString:'{1}' Current Param:'{2}'", win.Processname, exConfig.ProcessStartParameter, strSize[i]));
+                                    }
+                                }
+
+                                Log.cLogger.Log(string.Format("Size execute event change Value (new Width:'{2}', new Height:'{3}'), Process:'{0}' ParamString:'{1}'", win.Processname, exConfig.ProcessStartParameter, iWidth.ToString(), iHeight.ToString()));
+                                win.SetSizeLocation(win.Rectangle.X, win.Rectangle.Y, iWidth, iHeight);
+                            } else
+                            {
+                                Log.cLogger.Log(string.Format("Size execute event has no arguments, Process:'{0}' ParamString:'{1}'", win.Processname, exConfig.ProcessStartParameter));
+                            }
+                            break;
+                        case ProcessEventExecuteTyp.Border:
+                            int iBorder = Convert.ToInt32(exConfig.ProcessStartParameter);
+                            IntPtr ipBorder = IntPtr.Zero;
+                            switch (iBorder)
+	                        {
+                                case 1:
+                                    ipBorder = (IntPtr)WindowHandle.Enums.WindowStyles.MAXIMIZEBOX;
+                                    break;
+                                case 2:
+                                    ipBorder = (IntPtr)WindowHandle.Enums.WindowStyles.OVERLAPPEDWINDOW;
+                                    break;
+                                case 3:
+                                    ipBorder = (IntPtr)WindowHandle.Enums.WindowStyles.SIZEFRAME;
+                                    break;
+                                case 4:
+                                    ipBorder = (IntPtr)WindowHandle.Enums.WindowStyles.BORDER;
+                                    break;
+                                default:
+                                    ipBorder = (IntPtr)WindowHandle.Enums.WindowStyles.MAXIMIZEBOX;
+                                    break;
+	                        }
+
+                            Log.cLogger.Log(string.Format("Border execute event change Value (new Bordertyp:'{2}' Border IntPtr:'{3}'), Process:'{0}' ParamString:'{1}'", win.Processname, exConfig.ProcessStartParameter, iBorder.ToString(), ipBorder.ToString()));
+                            win.SetBorderStyle(ipBorder);
+                            break;
+                        default:
+                            Log.cLogger.Log(string.Format("Command execute event , Process:'{0}' ParamString:'{1}'", win.Processname, exConfig.ProcessStartParameter));
+                            System.Diagnostics.Process.Start(exConfig.ProcessStartParameter);
+                            break;
                     }
                 } else
                 {
