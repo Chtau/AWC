@@ -9,8 +9,22 @@ namespace AWC.Save
     public static class ConfigFileManager
     {
         private static List<ExternTools.ExternalToolConfig> myExternalConfigs;
+        private static bool myAutoChecker;
+        private static bool myShowDebugWindow;
         private static string myConfigFileFullName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/AWCConfig.xml";
         private static string myBackupConfigFileFullName = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/bak_AWCConfig.xml";
+
+        public static bool ShowDebugWindow
+        {
+            get { return myShowDebugWindow; }
+            set { myShowDebugWindow = value; }
+        }
+
+        public static bool AutoChecker
+        {
+            get { return myAutoChecker; }
+            set { myAutoChecker = value; }
+        }
 
         enum BackupTyp
         {
@@ -64,31 +78,12 @@ namespace AWC.Save
                     using (XmlWriter writer = XmlWriter.Create(strFullFileName, xmlSettings))
                     {
                         writer.WriteStartDocument();
+                        writer.WriteStartElement("AWCConfig");
 
-                        //write the ExternalToolConfig list to the Config file
-                        writer.WriteStartElement("ExternalToolConfigCollection");
-                       
-                        if (myExternalConfigs != null && myExternalConfigs.Count > 0)
-                        {
-                            foreach (ExternTools.ExternalToolConfig _ExToolCon in myExternalConfigs)
-                            {
-                                if (_ExToolCon != null)
-                                {
-                                    writer.WriteStartElement("ExternalToolConfig");
-
-                                    writer.WriteElementString("Processname", _ExToolCon.ProcessName);
-                                    writer.WriteElementString("Eventtyp", ExternTools.ExternalToolConfig.GetStringEventTypValue(_ExToolCon.ProcessEventTyp));
-                                    writer.WriteElementString("ExecuteEventtyp", ExternTools.ExternalToolConfig.GetStringEventExecuteTypValue(_ExToolCon.ProcessEventExecuteTyp));
-                                    writer.WriteElementString("Startparameter", _ExToolCon.ProcessStartParameter);
-                                    writer.WriteElementString("Enable", _ExToolCon.Enable.ToString());
-
-                                    writer.WriteEndElement();
-                                }
-                            }
-                        }
+                        WriteExternalToolConfig(writer);
+                        WriteGlobalConfig(writer);
 
                         writer.WriteEndElement();
-
                         writer.WriteEndDocument();
 
                         BackUpConfigFile(BackupTyp.Delete);
@@ -126,41 +121,8 @@ namespace AWC.Save
 
                         if (doc != null && doc.HasChildNodes)
                         {
-                            //read the external config collection
-                            XmlNode nExConfigs = doc.SelectSingleNode("ExternalToolConfigCollection");
-                            if (nExConfigs != null && nExConfigs.HasChildNodes)
-                            {
-                                XmlNodeList node = nExConfigs.SelectNodes("ExternalToolConfig");
-
-                                if (node != null)
-                                {
-                                    if (myExternalConfigs == null)
-                                    {
-                                        myExternalConfigs = new List<ExternTools.ExternalToolConfig>();
-                                    }
-                                    else
-                                    {
-                                        myExternalConfigs.Clear();
-                                    }
-
-                                    foreach (XmlNode xnodeSingleExternalToolConfig in node)
-                                    {
-                                        if (xnodeSingleExternalToolConfig != null)
-                                        {
-                                            if (xnodeSingleExternalToolConfig.HasChildNodes)
-                                            {
-                                                string strPrc = xnodeSingleExternalToolConfig["Processname"].InnerText;
-                                                string strEvTyp = xnodeSingleExternalToolConfig["Eventtyp"].InnerText;
-                                                string strExeEvTyp = xnodeSingleExternalToolConfig["ExecuteEventtyp"].InnerText;
-                                                string strParam = xnodeSingleExternalToolConfig["Startparameter"].InnerText;
-                                                bool bEnable = Convert.ToBoolean(xnodeSingleExternalToolConfig["Enable"].InnerText);
-                                                myExternalConfigs.Add(new ExternTools.ExternalToolConfig(strPrc, ExternTools.ExternalToolConfig.GetEnumEventTypValue(strEvTyp), strParam, bEnable, ExternTools.ExternalToolConfig.GetEnumEventExecuteTypValue(strExeEvTyp)));
-
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            ReadExternalToolConfig(doc);
+                            ReadGlobalConfig(doc);
 
                             return true;
                         }
@@ -184,6 +146,11 @@ namespace AWC.Save
             }
         }
 
+        /// <summary>
+        /// handle the backup configuration file while saving changes
+        /// </summary>
+        /// <param name="eBackuptyp"></param>
+        /// <returns></returns>
         private static bool BackUpConfigFile(BackupTyp eBackuptyp)
         {
             try
@@ -228,5 +195,127 @@ namespace AWC.Save
             }
         }
 
+        /// <summary>
+        /// Writes the Configuration for the External Tool
+        /// </summary>
+        /// <param name="_writer">XmlWrite from the Target file</param>
+        private static void WriteExternalToolConfig(XmlWriter _writer)
+        {
+            //write the ExternalToolConfig list to the Config file
+            _writer.WriteStartElement("ExternalToolConfigCollection");
+            if (myExternalConfigs != null && myExternalConfigs.Count > 0)
+            {
+                foreach (ExternTools.ExternalToolConfig _ExToolCon in myExternalConfigs)
+                {
+                    if (_ExToolCon != null)
+                    {
+                        _writer.WriteStartElement("ExternalToolConfig");
+
+                        _writer.WriteElementString("Processname", _ExToolCon.ProcessName);
+                        _writer.WriteElementString("Eventtyp", ExternTools.ExternalToolConfig.GetStringEventTypValue(_ExToolCon.ProcessEventTyp));
+                        _writer.WriteElementString("ExecuteEventtyp", ExternTools.ExternalToolConfig.GetStringEventExecuteTypValue(_ExToolCon.ProcessEventExecuteTyp));
+                        _writer.WriteElementString("Startparameter", _ExToolCon.ProcessStartParameter);
+                        _writer.WriteElementString("Enable", _ExToolCon.Enable.ToString());
+
+                        _writer.WriteEndElement();
+                    }
+                }
+            }
+            //Writes if the Autochecker should activitet
+            _writer.WriteStartElement("AutoChecker");
+            _writer.WriteElementString("Aktiv", myAutoChecker.ToString());
+            _writer.WriteEndElement();
+
+            _writer.WriteEndElement();
+        }
+
+        private static void WriteGlobalConfig(XmlWriter _writer)
+        {
+            _writer.WriteStartElement("GlobalConfig");
+
+            _writer.WriteStartElement("Startup");
+            _writer.WriteElementString("ShowDebugWindow", myShowDebugWindow.ToString());
+            _writer.WriteEndElement();
+
+            _writer.WriteEndElement();
+        }
+
+        /// <summary>
+        /// Reads the Configuration for the External Tool
+        /// </summary>
+        /// <param name="_doc">XmlDocument from the Source File</param>
+        private static void ReadExternalToolConfig(XmlDocument _doc)
+        {
+            //read the external config collection
+            XmlNode nExConfigs = _doc.SelectSingleNode("AWCConfig");
+            if (nExConfigs != null && nExConfigs.HasChildNodes)
+            {
+                XmlNode nEXToolC = nExConfigs.SelectSingleNode("ExternalToolConfigCollection");
+
+                if (nEXToolC != null && nEXToolC.HasChildNodes)
+                {
+                    XmlNodeList node = nEXToolC.SelectNodes("ExternalToolConfig");
+
+                    if (node != null)
+                    {
+                        if (myExternalConfigs == null)
+                        {
+                            myExternalConfigs = new List<ExternTools.ExternalToolConfig>();
+                        }
+                        else
+                        {
+                            myExternalConfigs.Clear();
+                        }
+
+                        foreach (XmlNode xnodeSingleExternalToolConfig in node)
+                        {
+                            if (xnodeSingleExternalToolConfig != null)
+                            {
+                                if (xnodeSingleExternalToolConfig.HasChildNodes)
+                                {
+                                    string strPrc = xnodeSingleExternalToolConfig["Processname"].InnerText;
+                                    string strEvTyp = xnodeSingleExternalToolConfig["Eventtyp"].InnerText;
+                                    string strExeEvTyp = xnodeSingleExternalToolConfig["ExecuteEventtyp"].InnerText;
+                                    string strParam = xnodeSingleExternalToolConfig["Startparameter"].InnerText;
+                                    bool bEnable = Convert.ToBoolean(xnodeSingleExternalToolConfig["Enable"].InnerText);
+                                    myExternalConfigs.Add(new ExternTools.ExternalToolConfig(strPrc, ExternTools.ExternalToolConfig.GetEnumEventTypValue(strEvTyp), strParam, bEnable, ExternTools.ExternalToolConfig.GetEnumEventExecuteTypValue(strExeEvTyp)));
+
+                                }
+                            }
+                        }
+                    }
+
+                    XmlNodeList nodeChecker = nEXToolC.SelectNodes("AutoChecker");
+                    if (nodeChecker != null)
+                    {
+                        foreach (XmlNode item in nodeChecker)
+                        {
+                            myAutoChecker = Convert.ToBoolean(item["Aktiv"].InnerText);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void ReadGlobalConfig(XmlDocument _doc)
+        {
+            XmlNode nExConfigs = _doc.SelectSingleNode("AWCConfig");
+            if (nExConfigs != null && nExConfigs.HasChildNodes)
+            {
+                XmlNode nEXToolC = nExConfigs.SelectSingleNode("GlobalConfig");
+
+                 if (nEXToolC != null && nEXToolC.HasChildNodes)
+                 {
+                     XmlNodeList nodeChecker = nEXToolC.SelectNodes("Startup");
+                     if (nodeChecker != null)
+                     {
+                         foreach (XmlNode item in nodeChecker)
+                         {
+                             myShowDebugWindow = Convert.ToBoolean(item["ShowDebugWindow"].InnerText);
+                         }
+                     }
+                 }
+            }
+        }
     }
 }

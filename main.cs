@@ -54,12 +54,15 @@ namespace AWC
             InitLogger();
             InitGlobal();
 
-#if (DEBUG)
+            if (Save.ConfigFileManager.ShowDebugWindow)
             {
                 this.Opacity = 1;
-                Log.cLogger.Log("While Debug the main Form is shown");
+                showDebugWindowToolStripMenuItem.Checked = true;
+            } else
+            {
+                showDebugWindowToolStripMenuItem.Checked = false;
             }
-#endif
+
         }
 
         private void InitLogger()
@@ -72,8 +75,7 @@ namespace AWC
         {
             try
             {
-                showDebugWindowToolStripMenuItem.Checked = this.Visible;
-
+                
             } catch (Exception ex)
             {
                 Log.cLogger.Log(ex);
@@ -145,6 +147,18 @@ namespace AWC
         {
             try
             {
+                //backup current state
+                if (Save.ConfigFileManager.ExternalToolConfigs == null || Save.ConfigFileManager.ExternalToolConfigs.Count < 1)
+                {
+                    Save.ConfigFileManager.ExternalToolConfigs = myExTool.ExternalToolConfig;
+                }
+
+                Save.ConfigFileManager.ShowDebugWindow = showDebugWindowToolStripMenuItem.Checked;
+                Save.ConfigFileManager.AutoChecker = configCheckerToolStripMenuItem.Checked;
+
+                Save.ConfigFileManager.Save(Save.ConfigFileManager.ConfigFileFullName);
+
+
                 if (myGPrc != null)
                 {
                     myGPrc.InterupRefresh();

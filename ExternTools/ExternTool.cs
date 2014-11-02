@@ -9,6 +9,12 @@ namespace AWC.ExternTools
         private bool _Dispose = false;
         private Dictionary<string ,List<ExternalToolConfig>> myProcessToWatch;
         private List<WindowHandle.Window> myWindowsForWatching;
+        private List<ExternalToolConfig> myExternalToolConfig;
+
+        public List<ExternalToolConfig> ExternalToolConfig
+        {
+            get { return myExternalToolConfig; }
+        }
 
         public Dictionary<string, List<ExternalToolConfig>> ProcessToWatch
         {
@@ -80,6 +86,8 @@ namespace AWC.ExternTools
         {
             try
             {
+                myExternalToolConfig = _lExToolConfig;
+
                 if (_lExToolConfig != null && _lExToolConfig.Count > 0)
                 {
                     if (myProcessToWatch != null)
