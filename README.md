@@ -4,7 +4,6 @@ AWC
 Software for controlling and changing Windows styles from other Application. Change the Border style of a Window to thine-line Border or set the Window on top of the Z-Index (Top Most of all Windows).
 
 
-Current State: active Development
 
 Functions:
 
