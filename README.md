@@ -28,4 +28,4 @@ Functions:
   shows Runtime
 
 
-See additional information http://dlution.at/
+See additional information http://www.dlution.com/
